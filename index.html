@@ -1,0 +1,21 @@
+<script src='/vendor/loader.js'></script>
+<script src='/implementations/rsvp-2.0.4.js'></script>
+<script src='/implementations/bluebird.js'></script>
+<script src='/implementations/when.js'></script>
+<script src='/node_modules/benchmark/benchmark.js'></script>
+
+<script>
+  define('benchmark', [], function(){
+    return Benchmark;
+  });
+
+  define('rsvp', [], function(){
+    return RSVP;
+  });
+</script>
+
+<script src='/tmp/public/promise_benchmarks.amd.js'></script>
+
+<script>
+  require('main').run();
+</script>
