@@ -8,6 +8,7 @@ module.exports = function(grunt) {
   grunt.loadTasks('tasks');
 
   this.registerTask('default', ['build']);
+  this.registerTask('server', ['build', 'connect', 'watch']);
   this.registerTask('build',   ['clean', 'transpile', 'concat:browser']);
 
   config.env = process.env;
