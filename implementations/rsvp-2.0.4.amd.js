@@ -1,40 +1,3 @@
-(function(globals) {
-var define, requireModule;
-
-(function() {
-  var registry = {}, seen = {};
-
-  define = function(name, deps, callback) {
-    registry[name] = { deps: deps, callback: callback };
-  };
-
-  requireModule = function(name) {
-    if (seen[name]) { return seen[name]; }
-    seen[name] = {};
-
-    var mod = registry[name];
-    if (!mod) {
-      throw new Error("Module '" + name + "' not found.");
-    }
-
-    var deps = mod.deps,
-        callback = mod.callback,
-        reified = [],
-        exports;
-
-    for (var i=0, l=deps.length; i<l; i++) {
-      if (deps[i] === 'exports') {
-        reified.push(exports = {});
-      } else {
-        reified.push(requireModule(deps[i]));
-      }
-    }
-
-    var value = callback.apply(this, reified);
-    return seen[name] = exports || value;
-  };
-})();
-
 define("rsvp/all",
   ["rsvp/promise","exports"],
   function(__dependency1__, __exports__) {
@@ -164,14 +127,63 @@ define("rsvp/async",
     __exports__.async = async;
     __exports__.asyncDefault = asyncDefault;
   });
-define("rsvp/config",
-  ["exports"],
-  function(__exports__) {
+define("rsvp/cast",
+  ["rsvp/resolve","exports"],
+  function(__dependency1__, __exports__) {
     "use strict";
+    var resolve = __dependency1__.resolve;
+
+    function cast(entry) {
+      if (typeof entry === 'object' && entry.constructor === this) {
+        return entry;
+      }
+
+      return resolve(entry);
+    }
+
+
+    __exports__.cast = cast;
+  });
+define("rsvp/config",
+  ["rsvp/events","exports"],
+  function(__dependency1__, __exports__) {
+    "use strict";
+    var EventTarget = __dependency1__.EventTarget;
+
     var config = {};
+    EventTarget.mixin(config);
+
+    function configure(name, value) {
+      if (name === 'onerror') {
+        // handle for legacy users that expect the actual
+        // error to be passed to their function added via
+        // `RSVP.configure('onerror', someFunctionHere);`
+        config.on('error', function(event){
+          value(event.detail);
+        });
+      } else {
+        config[name] = value;
+      }
+    }
+
+    function on(){
+      return config.on.apply(config, arguments);
+    }
+
+    function off(){
+      return config.off.apply(config, arguments);
+    }
+
+    function trigger(){
+      return config.trigger.apply(config, arguments);
+    }
 
 
     __exports__.config = config;
+    __exports__.configure = configure;
+    __exports__.on = on;
+    __exports__.off = off;
+    __exports__.trigger = trigger;
   });
 define("rsvp/defer",
   ["rsvp/promise","exports"],
@@ -452,9 +464,7 @@ define("rsvp/promise",
     };
 
     function onerror(event) {
-      if (config.onerror) {
-        config.onerror(event.detail);
-      }
+      config.trigger('error', event);
     }
 
     var invokeCallback = function(type, promise, callback, event) {
@@ -523,10 +533,26 @@ define("rsvp/promise",
         return thenPromise;
       },
 
-      fail: function(fail) {
-        return this.then(null, fail);
+      fail: function(onRejection) {
+        return this.then(null, onRejection);
+      },
+      'finally': function(callback) {
+        var promise = this;
+        var cast = this.constructor.cast;
+
+        return promise.then(function(value) {
+          return cast(callback()).then(function(){
+            return value;
+          });
+        }, function(reason) {
+          return cast(callback()).then(function(){
+            throw reason;
+          });
+        });
       }
     };
+
+    Promise.prototype['catch'] = Promise.prototype.fail;
 
     EventTarget.mixin(Promise.prototype);
 
@@ -644,8 +670,8 @@ define("rsvp/rethrow",
     __exports__.rethrow = rethrow;
   });
 define("rsvp",
-  ["rsvp/events","rsvp/promise","rsvp/node","rsvp/all","rsvp/hash","rsvp/rethrow","rsvp/defer","rsvp/config","rsvp/resolve","rsvp/reject","rsvp/async","exports"],
-  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __exports__) {
+  ["rsvp/events","rsvp/promise","rsvp/node","rsvp/all","rsvp/hash","rsvp/rethrow","rsvp/defer","rsvp/config","rsvp/resolve","rsvp/reject","rsvp/async","rsvp/cast","exports"],
+  function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __exports__) {
     "use strict";
     var EventTarget = __dependency1__.EventTarget;
     var Promise = __dependency2__.Promise;
@@ -655,14 +681,17 @@ define("rsvp",
     var rethrow = __dependency6__.rethrow;
     var defer = __dependency7__.defer;
     var config = __dependency8__.config;
+    var configure = __dependency8__.configure;
+    var on = __dependency8__.on;
+    var off = __dependency8__.off;
+    var trigger = __dependency8__.trigger;
     var resolve = __dependency9__.resolve;
     var reject = __dependency10__.reject;
     var async = __dependency11__.async;
     var asyncDefault = __dependency11__.asyncDefault;
+    var cast = __dependency12__.cast;
 
-    function configure(name, value) {
-      config[name] = value;
-    }
+    Promise.cast = cast;
 
 
     __exports__.Promise = Promise;
@@ -673,10 +702,11 @@ define("rsvp",
     __exports__.defer = defer;
     __exports__.denodeify = denodeify;
     __exports__.configure = configure;
+    __exports__.trigger = trigger;
+    __exports__.on = on;
+    __exports__.off = off;
     __exports__.resolve = resolve;
     __exports__.reject = reject;
     __exports__.async = async;
     __exports__.asyncDefault = asyncDefault;
   });
-window.RSVP = requireModule('rsvp');
-}(window));
