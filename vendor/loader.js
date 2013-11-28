@@ -1,28 +1,27 @@
-var define, require;
+var define, requireModule, require, requirejs;
 
 (function() {
   var registry = {}, seen = {};
 
   define = function(name, deps, callback) {
-    if (name && typeof window === 'object') {
-      name = name.replace(/(:?\.\.?\/)+/,''); //strip relative paths for browser for now
-    }
     registry[name] = { deps: deps, callback: callback };
   };
 
   define.registry = registry;
-  define.amd = 'trickedya';
+  define.amd = 'tricked ya';
 
-  require = function(name) {
+  requirejs = require = requireModule = function(name) {
+  requirejs._eak_seen = registry;
+
     if (seen[name]) { return seen[name]; }
     seen[name] = {};
 
-    var mod = registry[name];
-    if (!mod) {
-      throw new Error("Module '" + name + "' not found.");
+    if (!registry[name]) {
+      throw new Error("Could not find module " + name);
     }
 
-    var deps = mod.deps,
+    var mod = registry[name],
+        deps = mod.deps,
         callback = mod.callback,
         reified = [],
         exports;
@@ -31,11 +30,27 @@ var define, require;
       if (deps[i] === 'exports') {
         reified.push(exports = {});
       } else {
-        reified.push(require(deps[i]));
+        reified.push(requireModule(resolve(deps[i])));
       }
     }
 
     var value = callback.apply(this, reified);
     return seen[name] = exports || value;
+
+    function resolve(child) {
+      if (child.charAt(0) !== '.') { return child; }
+      var parts = child.split("/");
+      var parentBase = name.split("/").slice(0, -1);
+
+      for (var i=0, l=parts.length; i<l; i++) {
+        var part = parts[i];
+
+        if (part === '..') { parentBase.pop(); }
+        else if (part === '.') { continue; }
+        else { parentBase.push(part); }
+      }
+
+      return parentBase.join("/");
+    }
   };
 })();
