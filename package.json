@@ -23,7 +23,7 @@
     "grunt-contrib-clean": "~0.5.0",
     "when": "~2.6.0",
     "rsvp": "~2.0.4",
-    "bluebird": "~0.10.8-0"
+    "bluebird": "~0.10.10-0"
   },
   "scripts": {
     "start": "npm build && node index",
