@@ -1,5 +1,5 @@
 "use strict";
-var Promise = require("./promise")["default"];
+var Promise = require("./promise").Promise;
 
 /**
   `RSVP.resolve` returns a promise that will become fulfilled with the passed
@@ -33,8 +33,10 @@ var Promise = require("./promise")["default"];
   @return {Promise} a promise that will become fulfilled with the given
   `value`
 */
-exports["default"] = function resolve(value, label) {
+function resolve(value, label) {
   return new Promise(function(resolve, reject) {
     resolve(value);
   }, label);
-};
+}
+
+exports.resolve = resolve;

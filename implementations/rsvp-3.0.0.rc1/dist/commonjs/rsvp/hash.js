@@ -1,7 +1,16 @@
 "use strict";
-var Promise = require("./promise")["default"];
+var Promise = require("./promise").Promise;
 var isFunction = require("./utils").isFunction;
-var keysOf = require("./utils").keysOf;
+
+var keysOf = Object.keys || function(object) {
+  var result = [];
+
+  for (var prop in object) {
+    result.push(prop);
+  }
+
+  return result;
+};
 
 /**
   `RSVP.hash` is similar to `RSVP.all`, but takes an object instead of an array
@@ -89,7 +98,7 @@ var keysOf = require("./utils").keysOf;
   @return {Promise} promise that is fulfilled when all properties of `promises`
   have been fulfilled, or rejected if any of them become rejected.
 */
-exports["default"] = function hash(object, label) {
+function hash(object, label) {
   var results = {},
       keys = keysOf(object),
       remaining = keys.length;
@@ -127,4 +136,6 @@ exports["default"] = function hash(object, label) {
       }
     }
   });
-};
+}
+
+exports.hash = hash;

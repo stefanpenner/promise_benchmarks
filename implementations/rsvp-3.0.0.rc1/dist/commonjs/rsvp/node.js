@@ -1,5 +1,6 @@
 "use strict";
-var Promise = require("./promise")["default"];
+var Promise = require("./promise").Promise;
+var all = require("./all").all;
 
 var slice = Array.prototype.slice;
 
@@ -89,13 +90,13 @@ function makeNodeCallbackFor(resolve, reject) {
   @return {Function} a function that wraps `nodeFunc` to return an
   `RSVP.Promise`
 */
-exports["default"] = function denodeify(nodeFunc, binding) {
+function denodeify(nodeFunc, binding) {
   return function()  {
     var nodeArgs = slice.call(arguments), resolve, reject;
     var thisArg = this || binding;
 
     return new Promise(function(resolve, reject) {
-      Promise.all(nodeArgs).then(function(nodeArgs) {
+      all(nodeArgs).then(function(nodeArgs) {
         try {
           nodeArgs.push(makeNodeCallbackFor(resolve, reject));
           nodeFunc.apply(thisArg, nodeArgs);
@@ -105,4 +106,6 @@ exports["default"] = function denodeify(nodeFunc, binding) {
       });
     });
   };
-};
+}
+
+exports.denodeify = denodeify;

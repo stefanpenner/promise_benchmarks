@@ -1,5 +1,5 @@
 "use strict";
-var Promise = require("./promise")["default"];
+var Promise = require("./promise").Promise;
 
 /**
   `RSVP.reject` returns a promise that will become rejected with the passed
@@ -37,8 +37,10 @@ var Promise = require("./promise")["default"];
   @return {Promise} a promise that will become rejected with the given
   `reason`.
 */
-exports["default"] = function reject(reason, label) {
+function reject(reason, label) {
   return new Promise(function (resolve, reject) {
     reject(reason);
   }, label);
-};
+}
+
+exports.reject = reject;

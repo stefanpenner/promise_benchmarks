@@ -21,7 +21,7 @@ var callbacksFor = function(object) {
   //@module RSVP
   //@class EventTarget
 */
-exports["default"] = {
+var EventTarget = {
 
   /**
     @private
@@ -201,3 +201,5 @@ exports["default"] = {
     }
   }
 };
+
+exports.EventTarget = EventTarget;

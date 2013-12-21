@@ -1,20 +1,15 @@
 "use strict";
 var config = require("./config").config;
-var EventTarget = require("./events")["default"];
-var instrument = require("./instrument")["default"];
+var EventTarget = require("./events").EventTarget;
+var cast = require("./cast").cast;
+var instrument = require("./instrument").instrument;
 var objectOrFunction = require("./utils").objectOrFunction;
 var isFunction = require("./utils").isFunction;
 var now = require("./utils").now;
-var cast = require("./promise/cast")["default"];
-var all = require("./promise/all")["default"];
-var race = require("./promise/race")["default"];
 
 var guidKey = 'rsvp_' + now() + '-';
 var counter = 0;
 
-function noop() {}
-
-exports["default"] = Promise;
 function Promise(resolver, label) {
   if (!isFunction(resolver)) {
     throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
@@ -131,7 +126,7 @@ Promise.prototype = {
     var promise = this;
     this._onerror = null;
 
-    var thenPromise = new this.constructor(noop, label);
+    var thenPromise = new this.constructor(function() {}, label);
 
     if (this._state) {
       var callbacks = arguments;
@@ -169,8 +164,6 @@ Promise.prototype = {
 };
 
 Promise.cast = cast;
-Promise.all  = all;
-Promise.race = race;
 
 function handleThenable(promise, value) {
   var then = null,
@@ -248,3 +241,5 @@ function publishRejection(promise) {
 
   publish(promise, promise._state = REJECTED);
 }
+
+exports.Promise = Promise;

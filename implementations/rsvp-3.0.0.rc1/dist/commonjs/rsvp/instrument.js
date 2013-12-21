@@ -2,7 +2,7 @@
 var config = require("./config").config;
 var now = require("./utils").now;
 
-exports["default"] = function instrument(eventName, promise, child) {
+function instrument(eventName, promise, child) {
   // instrumentation should not disrupt normal usage.
   try {
     config.trigger(eventName, {
@@ -18,4 +18,6 @@ exports["default"] = function instrument(eventName, promise, child) {
       throw error;
     }, 0);
   }
-};
+}
+
+exports.instrument = instrument;

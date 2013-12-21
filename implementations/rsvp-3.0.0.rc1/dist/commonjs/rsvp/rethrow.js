@@ -39,9 +39,11 @@ var local = (typeof global === "undefined") ? this : global;
   @param {Error} reason reason the promise became rejected.
   @throws Error
 */
-exports["default"] = function rethrow(reason) {
+function rethrow(reason) {
   local.setTimeout(function() {
     throw reason;
   });
   throw reason;
-};
+}
+
+exports.rethrow = rethrow;

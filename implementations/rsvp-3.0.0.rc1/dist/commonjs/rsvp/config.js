@@ -1,5 +1,5 @@
 "use strict";
-var EventTarget = require("./events")["default"];
+var EventTarget = require("./events").EventTarget;
 
 var config = {
   instrument: false

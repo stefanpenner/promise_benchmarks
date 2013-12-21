@@ -1,17 +1,17 @@
 "use strict";
-var Promise = require("./rsvp/promise")["default"];
-var EventTarget = require("./rsvp/events")["default"];
-var denodeify = require("./rsvp/node")["default"];
-var all = require("./rsvp/all")["default"];
-var race = require("./rsvp/race")["default"];
-var hash = require("./rsvp/hash")["default"];
-var rethrow = require("./rsvp/rethrow")["default"];
-var defer = require("./rsvp/defer")["default"];
+var EventTarget = require("./rsvp/events").EventTarget;
+var Promise = require("./rsvp/promise").Promise;
+var denodeify = require("./rsvp/node").denodeify;
+var all = require("./rsvp/all").all;
+var race = require("./rsvp/race").race;
+var hash = require("./rsvp/hash").hash;
+var rethrow = require("./rsvp/rethrow").rethrow;
+var defer = require("./rsvp/defer").defer;
 var config = require("./rsvp/config").config;
 var configure = require("./rsvp/config").configure;
-var resolve = require("./rsvp/resolve")["default"];
-var reject = require("./rsvp/reject")["default"];
-var asap = require("./rsvp/asap")["default"];
+var resolve = require("./rsvp/resolve").resolve;
+var reject = require("./rsvp/reject").reject;
+var asap = require("./rsvp/asap").asap;
 
 config.async = asap; // default async is asap;
 
