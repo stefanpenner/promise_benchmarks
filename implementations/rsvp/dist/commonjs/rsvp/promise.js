@@ -122,7 +122,7 @@ Promise.prototype = {
     config.trigger('error', reason);
   },
 
-  then: function(done, fail, label) {
+  then: function(onFulfillment, onRejection, label) {
     var promise = this;
     this._onerror = null;
 
@@ -130,11 +130,11 @@ Promise.prototype = {
 
     if (this._state) {
       var callbacks = arguments;
-      config.async(function() {
+      config.async(function invokePromiseCallback() {
         invokeCallback(promise._state, thenPromise, callbacks[promise._state - 1], promise._detail);
       });
     } else {
-      subscribe(this, thenPromise, done, fail);
+      subscribe(this, thenPromise, onFulfillment, onRejection);
     }
 
     if (config.instrument) {
@@ -144,11 +144,11 @@ Promise.prototype = {
     return thenPromise;
   },
 
-  fail: function(onRejection, label) {
+  'catch': function(onRejection, label) {
     return this.then(null, onRejection, label);
   },
 
-  'finally': function(callback) {
+  'finally': function(callback, label) {
     var constructor = this.constructor;
 
     return this.then(function(value) {
@@ -159,13 +159,11 @@ Promise.prototype = {
       return constructor.cast(callback()).then(function(){
         throw reason;
       });
-    });
+    }, label);
   }
 };
 
-Promise.prototype['catch'] = Promise.prototype.fail;
 Promise.cast = cast;
-
 
 function handleThenable(promise, value) {
   var then = null,
@@ -194,7 +192,7 @@ function handleThenable(promise, value) {
           resolved = true;
 
           reject(promise, val);
-        }, 'Locked onto ' + (promise._label || ' unknown promise'));
+        }, 'derived from: ' + (promise._label || ' unknown promise'));
 
         return true;
       }
