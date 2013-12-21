@@ -1307,7 +1307,7 @@ define("rsvp/utils",
   function(__exports__) {
     "use strict";
     function objectOrFunction(x) {
-      return isFunction(x) || (typeof x === "object" && x !== null);
+      return typeof x === "function" || (typeof x === "object" && x !== null);
     }
 
     __exports__.objectOrFunction = objectOrFunction;function isFunction(x) {
@@ -1315,7 +1315,7 @@ define("rsvp/utils",
     }
 
     __exports__.isFunction = isFunction;function isNonThenable(x) {
-      return !(objectOrFunction(x) && typeof x.then === 'function');
+      return !objectOrFunction(x);
     }
 
     __exports__.isNonThenable = isNonThenable;function isArray(x) {

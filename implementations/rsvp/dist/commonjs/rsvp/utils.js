@@ -1,6 +1,6 @@
 "use strict";
 function objectOrFunction(x) {
-  return isFunction(x) || (typeof x === "object" && x !== null);
+  return typeof x === "function" || (typeof x === "object" && x !== null);
 }
 
 exports.objectOrFunction = objectOrFunction;function isFunction(x) {
@@ -8,7 +8,7 @@ exports.objectOrFunction = objectOrFunction;function isFunction(x) {
 }
 
 exports.isFunction = isFunction;function isNonThenable(x) {
-  return !(objectOrFunction(x) && typeof x.then === 'function');
+  return !objectOrFunction(x);
 }
 
 exports.isNonThenable = isNonThenable;function isArray(x) {
