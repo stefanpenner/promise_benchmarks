@@ -1,1 +1,2 @@
-require('./tmp/commonjs/main').run();
+require('./es6');
+require('./lib/main').run();
