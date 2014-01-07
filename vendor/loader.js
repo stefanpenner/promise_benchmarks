@@ -11,7 +11,6 @@ var define, requireModule, require, requirejs;
   define.amd = 'tricked ya';
 
   requirejs = require = requireModule = function(name) {
-
     if (seen[name]) { return seen[name]; }
 
     if (!registry[name]) {
