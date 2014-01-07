@@ -9,7 +9,7 @@
   "devDependencies": {
     "jshint": "~0.9",
     "grunt": "~0.4.1",
-    "grunt-es6-module-transpiler": "~0.4.0",
+    "grunt-es6-module-transpiler": "~0.6.0",
     "load-grunt-config": "~0.5.0",
     "benchmark": "git://github.com/bestiejs/benchmark.js",
     "lodash": "~2.3.0",
@@ -23,7 +23,10 @@
     "when": "~2.7.0",
     "rsvp": "~3.0.0",
     "bluebird": "~0.11.5-1",
-    "glob": "~3.2.7"
+    "es6-module-transpiler": "~0.3.6",
+    "glob": "~3.2.7",
+    "mkdirp": "~0.3.5",
+    "q": "~1.0.0"
   },
   "scripts": {
     "start": "npm build && node index",

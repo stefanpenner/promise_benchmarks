@@ -4,12 +4,15 @@
 <script src='/implementations/rsvp/dist/rsvp-3.0.1.amd.js'></script>
 <script src='/implementations/bluebird.js'></script>
 <script src='/implementations/when.js'></script>
+<script src='/implementations/q.js'></script>
 <script src='/node_modules/lodash/lodash.js'></script>
 <script src='/node_modules/benchmark/benchmark.js'></script>
 
 <script>
   define('benchmark', [], function(){
-    return Benchmark;
+    return {
+      default: Benchmark
+    };
   });
 </script>
 
