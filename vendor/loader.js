@@ -11,7 +11,7 @@ var define, requireModule, require, requirejs;
   define.amd = 'tricked ya';
 
   requirejs = require = requireModule = function(name) {
-  requirejs._eak_seen = registry;
+    requirejs._eak_seen = registry;
 
     if (seen[name]) { return seen[name]; }
 
@@ -20,10 +20,10 @@ var define, requireModule, require, requirejs;
     }
 
     var mod = registry[name],
-        deps = mod.deps,
-        callback = mod.callback,
-        reified = [],
-        exports;
+    deps = mod.deps,
+    callback = mod.callback,
+    reified = [],
+    exports;
 
     for (var i=0, l=deps.length; i<l; i++) {
       if (deps[i] === 'exports') {
