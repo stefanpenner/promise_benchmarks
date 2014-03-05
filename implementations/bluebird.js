@@ -1,9 +1,9 @@
 /**
- * bluebird build version 0.11.5-1
+ * bluebird build version 1.0.8
  * Features enabled: core, timers, race, any, call_get, filter, generators, map, nodeify, promisify, props, reduce, settle, some, progress, cancel, synchronous_inspection
 */
 /**
- * @preserve Copyright (c) 2013 Petka Antonov
+ * @preserve Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,31 +22,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
-;(function (f) {
-  // CommonJS
-  if (typeof exports === "object") {
-    module.exports = f();
-
-  // RequireJS
-  } else if (typeof define === "function" && define.amd) {
-    define('bluebird', [], f);
-
-  // <script>
-  } else {
-    if (typeof window !== "undefined") {
-      window.Promise = f();
-    } else if (typeof global !== "undefined") {
-      global.Promise = f();
-    } else if (typeof self !== "undefined") {
-      self.Promise = f();
-    }
-  }
-
-})(function () {var define,module,exports;
-return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define('bluebird',[], e):"undefined"!=typeof window?window.Promise=e():"undefined"!=typeof global?global.Promise=e():"undefined"!=typeof self&&(self.Promise=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,15 +45,16 @@ return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requi
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
-module.exports = function(Promise, Promise$_All, PromiseArray) {
+module.exports = function(Promise, Promise$_CreatePromiseArray, PromiseArray) {
 
     var SomePromiseArray = require("./some_promise_array.js")(PromiseArray);
     var ASSERT = require("./assert.js");
 
     function Promise$_Any(promises, useBound, caller) {
-        var ret = Promise$_All(
+        var ret = Promise$_CreatePromiseArray(
             promises,
             SomePromiseArray,
             caller,
@@ -103,7 +84,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray) {
 
 },{"./assert.js":2,"./some_promise_array.js":35}],2:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -122,6 +103,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = (function(){
@@ -154,7 +136,7 @@ module.exports = (function(){
 
 },{}],3:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -173,6 +155,7 @@ module.exports = (function(){
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var ASSERT = require("./assert.js");
@@ -251,7 +234,7 @@ module.exports = new Async();
 
 },{"./assert.js":2,"./queue.js":28,"./schedule.js":31,"./util.js":39}],4:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -270,13 +253,14 @@ module.exports = new Async();
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var Promise = require("./promise.js")();
 module.exports = Promise;
 },{"./promise.js":20}],5:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -295,6 +279,7 @@ module.exports = Promise;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise) {
@@ -332,7 +317,7 @@ module.exports = function(Promise) {
 
 },{}],6:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -351,6 +336,7 @@ module.exports = function(Promise) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, INTERNAL) {
@@ -411,7 +397,7 @@ module.exports = function(Promise, INTERNAL) {
 
 },{"./assert.js":2,"./async.js":3,"./errors.js":10}],7:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -430,6 +416,7 @@ module.exports = function(Promise, INTERNAL) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function() {
@@ -650,7 +637,7 @@ return CapturedTrace;
 
 },{"./assert.js":2,"./es5.js":12,"./util.js":39}],8:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -669,10 +656,12 @@ return CapturedTrace;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(NEXT_FILTER) {
 var util = require("./util.js");
+var errors = require("./errors.js");
 var tryCatch1 = util.tryCatch1;
 var errorObj = util.errorObj;
 var keys = require("./es5.js").keys;
@@ -718,7 +707,10 @@ CatchFilter.prototype.doFilter = function CatchFilter$_doFilter(e) {
         } else if (typeof item === "function" && !itemIsErrorType) {
             var shouldHandle = CatchFilter$_safePredicate(item, e);
             if (shouldHandle === errorObj) {
-                this._promise._attachExtraTrace(errorObj.e);
+                var trace = errors.canAttach(errorObj.e)
+                    ? errorObj.e
+                    : new Error(errorObj.e + "");
+                this._promise._attachExtraTrace(trace);
                 e = errorObj.e;
                 break;
             } else if (shouldHandle) {
@@ -738,9 +730,9 @@ CatchFilter.prototype.doFilter = function CatchFilter$_doFilter(e) {
 return CatchFilter;
 };
 
-},{"./es5.js":12,"./util.js":39}],9:[function(require,module,exports){
+},{"./errors.js":10,"./es5.js":12,"./util.js":39}],9:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -759,6 +751,7 @@ return CatchFilter;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var util = require("./util.js");
@@ -825,7 +818,7 @@ function Promise$thenThrow(reason) {
 
 },{"./assert.js":2,"./util.js":39}],10:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -844,53 +837,27 @@ function Promise$thenThrow(reason) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var global = require("./global.js");
 var Objectfreeze = require("./es5.js").freeze;
 var util = require("./util.js");
 var inherits = util.inherits;
-var isObject = util.isObject;
 var notEnumerableProp = util.notEnumerableProp;
 var Error = global.Error;
 
-function isStackAttached(val) {
-    return (val & 1) > 0;
-}
-
-function isHandled(val) {
-    return (val & 2) > 0;
-}
-
-function withStackAttached(val) {
-    return (val | 1);
-}
-
-function withHandledMarked(val) {
-    return (val | 2);
-}
-
-function withHandledUnmarked(val) {
-    return (val & (~2));
-}
-
-function ensureNotHandled(reason) {
-    var field;
-    if (isObject(reason) &&
-        ((field = reason["__promiseHandled__"]) !== void 0)) {
-        reason["__promiseHandled__"] = withHandledUnmarked(field);
-    }
-    return reason;
-}
-
-function attachDefaultState(obj) {
+function markAsOriginatingFromRejection(e) {
     try {
-        notEnumerableProp(obj, "__promiseHandled__", 0);
-        return true;
+        notEnumerableProp(e, "isAsync", true);
     }
-    catch(e) {
-        return false;
-    }
+    catch(ignore) {}
+}
+
+function originatesFromRejection(e) {
+    if (e == null) return false;
+    return ((e instanceof RejectionError) ||
+        e["isAsync"] === true);
 }
 
 function isError(obj) {
@@ -898,18 +865,12 @@ function isError(obj) {
 }
 
 function canAttach(obj) {
-    if (isError(obj)) {
-        var handledState = obj["__promiseHandled__"];
-        if (handledState === void 0) {
-            return attachDefaultState(obj);
-        }
-        return !isStackAttached(handledState);
-    }
-    return false;
+    return isError(obj);
 }
 
 function subError(nameProperty, defaultMessage) {
     function SubError(message) {
+        if (!(this instanceof SubError)) return new SubError(message);
         this.message = typeof message === "string" ? message : defaultMessage;
         this.name = nameProperty;
         if (Error.captureStackTrace) {
@@ -935,6 +896,7 @@ function RejectionError(message) {
     this.name = "RejectionError";
     this.message = message;
     this.cause = message;
+    this.isAsync = true;
 
     if (message instanceof Error) {
         this.message = message.message;
@@ -965,19 +927,14 @@ module.exports = {
     CancellationError: errorTypes.CancellationError,
     RejectionError: errorTypes.RejectionError,
     TimeoutError: errorTypes.TimeoutError,
-    attachDefaultState: attachDefaultState,
-    ensureNotHandled: ensureNotHandled,
-    withHandledUnmarked: withHandledUnmarked,
-    withHandledMarked: withHandledMarked,
-    withStackAttached: withStackAttached,
-    isStackAttached: isStackAttached,
-    isHandled: isHandled,
+    originatesFromRejection: originatesFromRejection,
+    markAsOriginatingFromRejection: markAsOriginatingFromRejection,
     canAttach: canAttach
 };
 
 },{"./es5.js":12,"./global.js":16,"./util.js":39}],11:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -996,6 +953,7 @@ module.exports = {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise) {
@@ -1016,7 +974,7 @@ return apiRejection;
 
 },{"./errors.js":10}],12:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1035,6 +993,7 @@ return apiRejection;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 var isES5 = (function(){
     "use strict";
@@ -1106,7 +1065,7 @@ else {
 
 },{}],13:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1125,81 +1084,44 @@ else {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
-module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
-
+module.exports = function(Promise) {
     var ASSERT = require("./assert.js");
+    var isArray = require("./util.js").isArray;
 
-    function Promise$_filterer(values) {
-        var fn = this;
-        var receiver = void 0;
-        if (typeof fn !== "function")  {
-            receiver = fn.receiver;
-            fn = fn.fn;
-        }
-        var ret = new Array(values.length);
+    function Promise$_filter(booleans) {
+        var values = this._settledValue;
+        var len = values.length;
+        var ret = new Array(len);
         var j = 0;
-        if (receiver === void 0) {
-             for (var i = 0, len = values.length; i < len; ++i) {
-                var value = values[i];
-                if (value === void 0 &&
-                    !(i in values)) {
-                    continue;
-                }
-                if (fn(value, i, len)) {
-                    ret[j++] = value;
-                }
-            }
-        }
-        else {
-            for (var i = 0, len = values.length; i < len; ++i) {
-                var value = values[i];
-                if (value === void 0 &&
-                    !(i in values)) {
-                    continue;
-                }
-                if (fn.call(receiver, value, i, len)) {
-                    ret[j++] = value;
-                }
-            }
+
+        for (var i = 0; i < len; ++i) {
+            if (booleans[i]) ret[j++] = values[i];
+
         }
         ret.length = j;
         return ret;
     }
 
-    function Promise$_Filter(promises, fn, useBound, caller) {
-        if (typeof fn !== "function") {
-            return apiRejection("fn must be a function");
-        }
-
-        if (useBound === true && promises._isBound()) {
-            fn = {
-                fn: fn,
-                receiver: promises._boundTo
-            };
-        }
-
-        return Promise$_All(promises, PromiseArray, caller,
-                useBound === true && promises._isBound()
-                ? promises._boundTo
-                : void 0)
-            .promise()
-            ._then(Promise$_filterer, void 0, void 0, fn, void 0, caller);
-    }
-
+    var ref = {ref: null};
     Promise.filter = function Promise$Filter(promises, fn) {
-        return Promise$_Filter(promises, fn, false, Promise.filter);
+        return Promise.map(promises, fn, ref)
+            ._then(Promise$_filter, void 0, void 0,
+                    ref.ref, void 0, Promise.filter);
     };
 
     Promise.prototype.filter = function Promise$filter(fn) {
-        return Promise$_Filter(this, fn, true, this.filter);
+        return this.map(fn, ref)
+            ._then(Promise$_filter, void 0, void 0,
+                    ref.ref, void 0, this.filter);
     };
 };
 
-},{"./assert.js":2}],14:[function(require,module,exports){
+},{"./assert.js":2,"./util.js":39}],14:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1218,10 +1140,10 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 module.exports = function(Promise, NEXT_FILTER) {
     var util = require("./util.js");
-    var ensureNotHandled = require("./errors.js").ensureNotHandled;
     var wrapsPrimitiveReceiver = util.wrapsPrimitiveReceiver;
     var isPrimitive = util.isPrimitive;
     var thrower = util.thrower;
@@ -1231,7 +1153,6 @@ module.exports = function(Promise, NEXT_FILTER) {
         return this;
     }
     function throwThis() {
-        ensureNotHandled(this);
         throw this;
     }
     function makeReturner(r) {
@@ -1241,7 +1162,6 @@ module.exports = function(Promise, NEXT_FILTER) {
     }
     function makeThrower(r) {
         return function Promise$_thrower() {
-            ensureNotHandled(r);
             throw r;
         };
     }
@@ -1282,7 +1202,6 @@ module.exports = function(Promise, NEXT_FILTER) {
         }
 
         if (promise.isRejected()) {
-            ensureNotHandled(reasonOrValue);
             NEXT_FILTER.e = reasonOrValue;
             return NEXT_FILTER;
         }
@@ -1305,9 +1224,9 @@ module.exports = function(Promise, NEXT_FILTER) {
     };
 };
 
-},{"./errors.js":10,"./util.js":39}],15:[function(require,module,exports){
+},{"./util.js":39}],15:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1326,6 +1245,7 @@ module.exports = function(Promise, NEXT_FILTER) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, apiRejection, INTERNAL) {
@@ -1360,7 +1280,7 @@ module.exports = function(Promise, apiRejection, INTERNAL) {
 
 },{"./errors.js":10,"./promise_spawn.js":24}],16:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1379,6 +1299,7 @@ module.exports = function(Promise, apiRejection, INTERNAL) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = (function(){
@@ -1403,7 +1324,7 @@ module.exports = (function(){
 
 },{}],17:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1422,9 +1343,11 @@ module.exports = (function(){
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
-module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
+module.exports = function(
+    Promise, Promise$_CreatePromiseArray, PromiseArray, apiRejection) {
 
     var ASSERT = require("./assert.js");
 
@@ -1438,51 +1361,55 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
         }
         var shouldDefer = false;
 
+        var ret = new Array(values.length);
+
         if (receiver === void 0) {
             for (var i = 0, len = values.length; i < len; ++i) {
-                if (values[i] === void 0 &&
-                    !(i in values)) {
-                    continue;
-                }
                 var value = fn(values[i], i, len);
-                if (!shouldDefer && Promise.is(value)) {
-                    if (value.isFulfilled()) {
-                        values[i] = value._settledValue;
-                        continue;
-                    }
-                    else {
-                        shouldDefer = true;
+                if (!shouldDefer) {
+                    var maybePromise = Promise._cast(value,
+                            Promise$_mapper, void 0);
+                    if (maybePromise instanceof Promise) {
+                        if (maybePromise.isFulfilled()) {
+                            ret[i] = maybePromise._settledValue;
+                            continue;
+                        }
+                        else {
+                            shouldDefer = true;
+                        }
+                        value = maybePromise;
                     }
                 }
-                values[i] = value;
+                ret[i] = value;
             }
         }
         else {
             for (var i = 0, len = values.length; i < len; ++i) {
-                if (values[i] === void 0 &&
-                    !(i in values)) {
-                    continue;
-                }
                 var value = fn.call(receiver, values[i], i, len);
-                if (!shouldDefer && Promise.is(value)) {
-                    if (value.isFulfilled()) {
-                        values[i] = value._settledValue;
-                        continue;
-                    }
-                    else {
-                        shouldDefer = true;
+                if (!shouldDefer) {
+                    var maybePromise = Promise._cast(value,
+                            Promise$_mapper, void 0);
+                    if (maybePromise instanceof Promise) {
+                        if (maybePromise.isFulfilled()) {
+                            ret[i] = maybePromise._settledValue;
+                            continue;
+                        }
+                        else {
+                            shouldDefer = true;
+                        }
+                        value = maybePromise;
                     }
                 }
-                values[i] = value;
+                ret[i] = value;
             }
         }
         return shouldDefer
-            ? Promise$_All(values, PromiseArray,
+            ? Promise$_CreatePromiseArray(ret, PromiseArray,
                 Promise$_mapper, void 0).promise()
-            : values;
+            : ret;
     }
 
-    function Promise$_Map(promises, fn, useBound, caller) {
+    function Promise$_Map(promises, fn, useBound, caller, ref) {
         if (typeof fn !== "function") {
             return apiRejection("fn must be a function");
         }
@@ -1494,15 +1421,20 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
             };
         }
 
-        return Promise$_All(
+        var ret = Promise$_CreatePromiseArray(
             promises,
             PromiseArray,
             caller,
             useBound === true && promises._isBound()
                 ? promises._boundTo
                 : void 0
-       ).promise()
-        ._then(
+       ).promise();
+
+        if (ref !== void 0) {
+            ref.ref = ret;
+        }
+
+        return ret._then(
             Promise$_mapper,
             void 0,
             void 0,
@@ -1512,18 +1444,18 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
        );
     }
 
-    Promise.prototype.map = function Promise$map(fn) {
-        return Promise$_Map(this, fn, true, this.map);
+    Promise.prototype.map = function Promise$map(fn, ref) {
+        return Promise$_Map(this, fn, true, this.map, ref);
     };
 
-    Promise.map = function Promise$Map(promises, fn) {
-        return Promise$_Map(promises, fn, false, Promise.map);
+    Promise.map = function Promise$Map(promises, fn, ref) {
+        return Promise$_Map(promises, fn, false, Promise.map, ref);
     };
 };
 
 },{"./assert.js":2}],18:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1542,6 +1474,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise) {
@@ -1588,7 +1521,7 @@ module.exports = function(Promise) {
 
 },{"./assert.js":2,"./async.js":3,"./util.js":39}],19:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1607,12 +1540,14 @@ module.exports = function(Promise) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, isPromiseArrayProxy) {
     var ASSERT = require("./assert.js");
     var util = require("./util.js");
     var async = require("./async.js");
+    var errors = require("./errors.js");
     var tryCatch1 = util.tryCatch1;
     var errorObj = util.errorObj;
 
@@ -1646,11 +1581,10 @@ module.exports = function(Promise, isPromiseArrayProxy) {
 
         if (ret === errorObj) {
             if (ret.e != null &&
-                ret.e.name === "StopProgressPropagation") {
-                ret.e["__promiseHandled__"] = 2;
-            }
-            else {
-                promise._attachExtraTrace(ret.e);
+                ret.e.name !== "StopProgressPropagation") {
+                var trace = errors.canAttach(ret.e)
+                    ? ret.e : new Error(ret.e + "");
+                promise._attachExtraTrace(trace);
                 promise._progress(ret.e);
             }
         }
@@ -1701,9 +1635,9 @@ module.exports = function(Promise, isPromiseArrayProxy) {
     };
 };
 
-},{"./assert.js":2,"./async.js":3,"./util.js":39}],20:[function(require,module,exports){
+},{"./assert.js":2,"./async.js":3,"./errors.js":10,"./util.js":39}],20:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1722,6 +1656,7 @@ module.exports = function(Promise, isPromiseArrayProxy) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function() {
@@ -1741,10 +1676,7 @@ var CatchFilter = require("./catch_filter.js")(NEXT_FILTER);
 var PromiseResolver = require("./promise_resolver.js");
 
 var isArray = util.isArray;
-var notEnumerableProp = util.notEnumerableProp;
-var isObject = util.isObject;
 
-var ensurePropertyExpansion = util.ensurePropertyExpansion;
 var errorObj = util.errorObj;
 var tryCatch1 = util.tryCatch1;
 var tryCatch2 = util.tryCatch2;
@@ -1754,11 +1686,8 @@ var TypeError = errors.TypeError;
 var CancellationError = errors.CancellationError;
 var TimeoutError = errors.TimeoutError;
 var RejectionError = errors.RejectionError;
-var ensureNotHandled = errors.ensureNotHandled;
-var withHandledMarked = errors.withHandledMarked;
-var withStackAttached = errors.withStackAttached;
-var isStackAttached = errors.isStackAttached;
-var isHandled = errors.isHandled;
+var originatesFromRejection = errors.originatesFromRejection;
+var markAsOriginatingFromRejection = errors.markAsOriginatingFromRejection;
 var canAttach = errors.canAttach;
 var thrower = util.thrower;
 var apiRejection = require("./errors_api_rejection")(Promise);
@@ -1915,7 +1844,7 @@ Promise.prototype.all = function Promise$all() {
 Promise.is = isPromise;
 
 function Promise$_all(promises, useBound, caller) {
-    return Promise$_All(
+    return Promise$_CreatePromiseArray(
         promises,
         PromiseArray,
         caller,
@@ -1930,7 +1859,8 @@ Promise.all = function Promise$All(promises) {
 
 Promise.join = function Promise$Join() {
     var $_len = arguments.length;var args = new Array($_len); for(var $_i = 0; $_i < $_len; ++$_i) {args[$_i] = arguments[$_i];}
-    return Promise$_All(args, PromiseArray, Promise.join, void 0).promise();
+    return Promise$_CreatePromiseArray(
+        args, PromiseArray, Promise.join, void 0).promise();
 };
 
 Promise.resolve = Promise.fulfilled =
@@ -1951,10 +1881,20 @@ function Promise$Resolve(value, caller) {
 Promise.reject = Promise.rejected = function Promise$Reject(reason) {
     var ret = new Promise(INTERNAL);
     if (debugging) ret._setTrace(Promise.reject, void 0);
+    markAsOriginatingFromRejection(reason);
     ret._cleanValues();
     ret._setRejected();
     ret._settledValue = reason;
+    if (!canAttach(reason)) {
+        var trace = new Error(reason + "");
+        ret._setCarriedStackTrace(trace);
+    }
+    ret._ensurePossibleRejectionHandled();
     return ret;
+};
+
+Promise.prototype.error = function Promise$_error(fn) {
+    return this.caught(originatesFromRejection, fn);
 };
 
 Promise.prototype._resolveFromSyncValue =
@@ -1963,6 +1903,7 @@ function Promise$_resolveFromSyncValue(value, caller) {
         this._cleanValues();
         this._setRejected();
         this._settledValue = value.e;
+        this._ensurePossibleRejectionHandled();
     }
     else {
         var maybePromise = Promise._cast(value, caller, void 0);
@@ -1998,7 +1939,7 @@ Promise.method = function Promise$_Method(fn) {
     };
 };
 
-Promise["try"] = Promise.attempt = function Promise$_Try(fn, args, ctx) {
+Promise.attempt = Promise["try"] = function Promise$_Try(fn, args, ctx) {
 
     if (typeof fn !== "function") {
         return apiRejection("fn must be a function");
@@ -2064,7 +2005,7 @@ Promise.longStackTraces = function Promise$LongStackTraces() {
    ) {
         throw new Error("cannot enable long stack traces after promises have been created");
     }
-    debugging = true;
+    debugging = CapturedTrace.isSupported();
 };
 
 Promise.hasLongStackTraces = function Promise$HasLongStackTraces() {
@@ -2075,7 +2016,7 @@ Promise.prototype._setProxyHandlers =
 function Promise$_setProxyHandlers(receiver, promiseSlotValue) {
     var index = this._length();
 
-    if (index >= 4194303 - 5) {
+    if (index >= 1048575 - 5) {
         index = 0;
         this._setLength(0);
     }
@@ -2119,8 +2060,9 @@ function Promise$_then(
     if (debugging && !haveInternalData) {
         var haveSameContext = this._peekContext() === this._traceParent;
         ret._traceParent = haveSameContext ? this._traceParent : this;
-        ret._setTrace(typeof caller === "function" ?
-            caller : this._then, this);
+        ret._setTrace(typeof caller === "function"
+                ? caller
+                : this._then, this);
     }
 
     if (!haveInternalData && this._isBound()) {
@@ -2143,7 +2085,7 @@ function Promise$_then(
 };
 
 Promise.prototype._length = function Promise$_length() {
-    return this._bitField & 4194303;
+    return this._bitField & 1048575;
 };
 
 Promise.prototype._isFollowingOrFulfilledOrRejected =
@@ -2156,12 +2098,8 @@ Promise.prototype._isFollowing = function Promise$_isFollowing() {
 };
 
 Promise.prototype._setLength = function Promise$_setLength(len) {
-    this._bitField = (this._bitField & -4194304) |
-        (len & 4194303);
-};
-
-Promise.prototype._cancellable = function Promise$_cancellable() {
-    return (this._bitField & 67108864) > 0;
+    this._bitField = (this._bitField & -1048576) |
+        (len & 1048575);
 };
 
 Promise.prototype._setFulfilled = function Promise$_setFulfilled() {
@@ -2184,12 +2122,55 @@ Promise.prototype._isFinal = function Promise$_isFinal() {
     return (this._bitField & 33554432) > 0;
 };
 
+Promise.prototype._cancellable = function Promise$_cancellable() {
+    return (this._bitField & 67108864) > 0;
+};
+
 Promise.prototype._setCancellable = function Promise$_setCancellable() {
     this._bitField = this._bitField | 67108864;
 };
 
 Promise.prototype._unsetCancellable = function Promise$_unsetCancellable() {
     this._bitField = this._bitField & (~67108864);
+};
+
+Promise.prototype._setRejectionIsUnhandled =
+function Promise$_setRejectionIsUnhandled() {
+    this._bitField = this._bitField | 2097152;
+};
+
+Promise.prototype._unsetRejectionIsUnhandled =
+function Promise$_unsetRejectionIsUnhandled() {
+    this._bitField = this._bitField & (~2097152);
+};
+
+Promise.prototype._isRejectionUnhandled =
+function Promise$_isRejectionUnhandled() {
+    return (this._bitField & 2097152) > 0;
+};
+
+Promise.prototype._setCarriedStackTrace =
+function Promise$_setCarriedStackTrace(capturedTrace) {
+    this._bitField = this._bitField | 1048576;
+    this._fulfillmentHandler0 = capturedTrace;
+};
+
+Promise.prototype._unsetCarriedStackTrace =
+function Promise$_unsetCarriedStackTrace() {
+    this._bitField = this._bitField & (~1048576);
+    this._fulfillmentHandler0 = void 0;
+};
+
+Promise.prototype._isCarryingStackTrace =
+function Promise$_isCarryingStackTrace() {
+    return (this._bitField & 1048576) > 0;
+};
+
+Promise.prototype._getCarriedStackTrace =
+function Promise$_getCarriedStackTrace() {
+    return this._isCarryingStackTrace()
+        ? this._fulfillmentHandler0
+        : void 0;
 };
 
 Promise.prototype._receiverAt = function Promise$_receiverAt(index) {
@@ -2225,11 +2206,13 @@ function Promise$_rejectionHandlerAt(index) {
 
 Promise.prototype._unsetAt = function Promise$_unsetAt(index) {
      if (index === 0) {
-        this._fulfillmentHandler0 =
         this._rejectionHandler0 =
         this._progressHandler0 =
         this._promise0 =
         this._receiver0 = void 0;
+        if (!this._isCarryingStackTrace()) {
+            this._fulfillmentHandler0 = void 0;
+        }
     }
     else {
         this[index - 5 + 0] =
@@ -2255,14 +2238,17 @@ function Promise$_resolveFromResolver(resolver) {
         promise._fulfill(val);
     }
     function Promise$_rejecter(val) {
-        promise._attachExtraTrace(val);
-        promise._reject(val);
+        var trace = canAttach(val) ? val : new Error(val + "");
+        promise._attachExtraTrace(trace);
+        markAsOriginatingFromRejection(val);
+        promise._reject(val, trace === val ? void 0 : trace);
     }
     var r = tryCatch2(resolver, void 0, Promise$_resolver, Promise$_rejecter);
     if (localDebugging) this._popContext();
 
     if (r !== void 0 && r === errorObj) {
-        promise._reject(r.e);
+        var trace = canAttach(r.e) ? r.e : new Error(r.e + "");
+        promise._reject(r.e, trace);
     }
 };
 
@@ -2275,7 +2261,7 @@ Promise.prototype._addCallbacks = function Promise$_addCallbacks(
 ) {
     var index = this._length();
 
-    if (index >= 4194303 - 5) {
+    if (index >= 1048575 - 5) {
         index = 0;
         this._setLength(0);
     }
@@ -2283,7 +2269,8 @@ Promise.prototype._addCallbacks = function Promise$_addCallbacks(
     if (index === 0) {
         this._promise0 = promise;
         if (receiver !== void 0) this._receiver0 = receiver;
-        if (typeof fulfill === "function") this._fulfillmentHandler0 = fulfill;
+        if (typeof fulfill === "function" && !this._isCarryingStackTrace())
+            this._fulfillmentHandler0 = fulfill;
         if (typeof reject === "function") this._rejectionHandler0 = reject;
         if (typeof progress === "function") this._progressHandler0 = progress;
     }
@@ -2321,28 +2308,14 @@ Promise.prototype._isBound = function Promise$_isBound() {
 Promise.prototype._spreadSlowCase =
 function Promise$_spreadSlowCase(targetFn, promise, values, boundTo) {
     var promiseForAll =
-            Promise$_All(values, PromiseArray, this._spreadSlowCase, boundTo)
+            Promise$_CreatePromiseArray
+                (values, PromiseArray, this._spreadSlowCase, boundTo)
             .promise()
             ._then(function() {
                 return targetFn.apply(boundTo, arguments);
             }, void 0, void 0, APPLY, void 0, this._spreadSlowCase);
 
     promise._follow(promiseForAll);
-};
-
-Promise.prototype._markHandled = function Promise$_markHandled(value) {
-    if( typeof value === "object" &&
-        value !== null) {
-        var handledState = value["__promiseHandled__"];
-
-        if (handledState === void 0) {
-            notEnumerableProp(value, "__promiseHandled__", 2);
-        }
-        else {
-            value["__promiseHandled__"] =
-                withHandledMarked(handledState);
-        }
-    }
 };
 
 Promise.prototype._callSpread =
@@ -2384,7 +2357,7 @@ function Promise$_settlePromiseFromHandler(
         handler.call(receiver, value, promise);
         return;
     }
-    if (this.isRejected()) this._markHandled(value);
+
     var localDebugging = debugging;
     var x = this._callHandler(handler, receiver,
                                 promise, value, localDebugging);
@@ -2394,9 +2367,10 @@ function Promise$_settlePromiseFromHandler(
     if (x === errorObj || x === promise || x === NEXT_FILTER) {
         var err = x === promise
                     ? makeSelfResolutionError()
-                    : ensureNotHandled(x.e);
-        if (x !== NEXT_FILTER) promise._attachExtraTrace(err);
-        promise._rejectUnchecked(err);
+                    : x.e;
+        var trace = canAttach(err) ? err : new Error(err + "");
+        if (x !== NEXT_FILTER) promise._attachExtraTrace(trace);
+        promise._rejectUnchecked(err, trace);
     }
     else {
         var castValue = Promise._cast(x,
@@ -2404,6 +2378,13 @@ function Promise$_settlePromiseFromHandler(
                     promise);
 
         if (isPromise(castValue)) {
+            if (castValue.isRejected() &&
+                !castValue._isCarryingStackTrace() &&
+                !canAttach(castValue._settledValue)) {
+                var trace = new Error(castValue._settledValue + "");
+                promise._attachExtraTrace(trace);
+                castValue._setCarriedStackTrace(trace);
+            }
             promise._follow(castValue);
             if (castValue._cancellable()) {
                 promise._cancellationParent = castValue;
@@ -2415,8 +2396,6 @@ function Promise$_settlePromiseFromHandler(
         }
     }
 };
-
-
 
 Promise.prototype._follow =
 function Promise$_follow(promise) {
@@ -2433,8 +2412,11 @@ function Promise$_follow(promise) {
         this._fulfillUnchecked(promise._settledValue);
     }
     else {
-        this._rejectUnchecked(promise._settledValue);
+        this._rejectUnchecked(promise._settledValue,
+            promise._getCarriedStackTrace());
     }
+
+    if (promise._isRejectionUnhandled()) promise._unsetRejectionIsUnhandled();
 
     if (debugging &&
         promise._traceParent == null) {
@@ -2492,8 +2474,7 @@ Promise.prototype._setTrace = function Promise$_setTrace(caller, parent) {
 
 Promise.prototype._attachExtraTrace =
 function Promise$_attachExtraTrace(error) {
-    if (debugging &&
-        canAttach(error)) {
+    if (debugging) {
         var promise = this;
         var stack = error.stack;
         stack = typeof stack === "string"
@@ -2520,24 +2501,6 @@ function Promise$_attachExtraTrace(error) {
         else {
             error.stack = stack.join("\n");
         }
-        error["__promiseHandled__"] =
-            withStackAttached(error["__promiseHandled__"]);
-    }
-};
-
-Promise.prototype._notifyUnhandledRejection =
-function Promise$_notifyUnhandledRejection(reason) {
-    if (!isHandled(reason["__promiseHandled__"])) {
-        reason["__promiseHandled__"] =
-            withHandledMarked(reason["__promiseHandled__"]);
-        CapturedTrace.possiblyUnhandledRejection(reason, this);
-    }
-};
-
-Promise.prototype._unhandledRejection =
-function Promise$_unhandledRejection(reason) {
-    if (!isHandled(reason["__promiseHandled__"])) {
-        async.invokeLater(this._notifyUnhandledRejection, this, reason);
     }
 };
 
@@ -2550,12 +2513,12 @@ Promise.prototype._cleanValues = function Promise$_cleanValues() {
 Promise.prototype._fulfill = function Promise$_fulfill(value) {
     if (this._isFollowingOrFulfilledOrRejected()) return;
     this._fulfillUnchecked(value);
-
 };
 
-Promise.prototype._reject = function Promise$_reject(reason) {
+Promise.prototype._reject =
+function Promise$_reject(reason, carriedStackTrace) {
     if (this._isFollowingOrFulfilledOrRejected()) return;
-    this._rejectUnchecked(reason);
+    this._rejectUnchecked(reason, carriedStackTrace);
 };
 
 Promise.prototype._settlePromiseAt = function Promise$_settlePromiseAt(index) {
@@ -2574,12 +2537,13 @@ Promise.prototype._settlePromiseAt = function Promise$_settlePromiseAt(index) {
         var done = false;
         var isFulfilled = this.isFulfilled();
         if (receiver !== void 0) {
-            if (receiver instanceof Promise && receiver._isProxied()) {
+            if (receiver instanceof Promise &&
+                receiver._isProxied()) {
                 receiver._unsetProxied();
 
                 if (isFulfilled) receiver._fulfillUnchecked(value);
-                else receiver._rejectUnchecked(value);
-
+                else receiver._rejectUnchecked(value,
+                    this._getCarriedStackTrace());
                 done = true;
             }
             else if (isPromiseArrayProxy(receiver, promise)) {
@@ -2594,7 +2558,7 @@ Promise.prototype._settlePromiseAt = function Promise$_settlePromiseAt(index) {
         if (!done) {
 
             if (isFulfilled) promise._fulfill(value);
-            else promise._reject(value);
+            else promise._reject(value, this._getCarriedStackTrace());
 
         }
     }
@@ -2645,6 +2609,7 @@ Promise.prototype._gc = function Promise$gc() {
 };
 
 Promise.prototype._queueSettleAt = function Promise$_queueSettleAt(index) {
+    if (this._isRejectionUnhandled()) this._unsetRejectionIsUnhandled();
     async.invoke(this._settlePromiseAt, this, index);
 };
 
@@ -2654,7 +2619,7 @@ function Promise$_fulfillUnchecked(value) {
     if (value === this) {
         var err = makeSelfResolutionError();
         this._attachExtraTrace(err);
-        return this._rejectUnchecked(err);
+        return this._rejectUnchecked(err, void 0);
     }
     this._cleanValues();
     this._setFulfilled();
@@ -2666,15 +2631,14 @@ function Promise$_fulfillUnchecked(value) {
     }
 };
 
-Promise.prototype._fulfillPromises = function Promise$_fulfillPromises(len) {
-    len = this._length();
-    for (var i = 0; i < len; i+= 5) {
-        this._settlePromiseAt(i);
-    }
+Promise.prototype._rejectUncheckedCheckError =
+function Promise$_rejectUncheckedCheckError(reason) {
+    var trace = canAttach(reason) ? reason : new Error(reason + "");
+    this._rejectUnchecked(reason, trace === reason ? void 0 : trace);
 };
 
 Promise.prototype._rejectUnchecked =
-function Promise$_rejectUnchecked(reason) {
+function Promise$_rejectUnchecked(reason, trace) {
     if (!this.isPending()) return;
     if (reason === this) {
         var err = makeSelfResolutionError();
@@ -2684,68 +2648,60 @@ function Promise$_rejectUnchecked(reason) {
     this._cleanValues();
     this._setRejected();
     this._settledValue = reason;
+
     if (this._isFinal()) {
-        async.invokeLater(thrower, void 0, reason);
+        async.invokeLater(thrower, void 0, trace === void 0 ? reason : trace);
         return;
     }
     var len = this._length();
+
+    if (trace !== void 0) this._setCarriedStackTrace(trace);
+
     if (len > 0) {
         async.invoke(this._rejectPromises, this, len);
     }
     else {
-        this._ensurePossibleRejectionHandled(reason);
+        this._ensurePossibleRejectionHandled();
     }
 };
 
 Promise.prototype._rejectPromises = function Promise$_rejectPromises(len) {
     len = this._length();
-    var rejectionWasHandled = false;
     for (var i = 0; i < len; i+= 5) {
-        var handler = this._rejectionHandlerAt(i);
-        if (!rejectionWasHandled) {
-            if(typeof handler === "function") rejectionWasHandled = true;
-            else {
-                var promise = this._promiseAt(i);
-                if (isPromise(promise) && promise._length() > 0) {
-                    rejectionWasHandled = true;
-                }
-                else {
-                    var receiver = this._receiverAt(i);
-                    if (isPromise(receiver) && receiver._length() > 0 ||
-                        isPromiseArrayProxy(receiver, promise)) {
-                        rejectionWasHandled = true;
-                    }
-                }
-            }
-        }
         this._settlePromiseAt(i);
     }
+    this._unsetCarriedStackTrace();
+};
 
-    if (!rejectionWasHandled) {
-        this._ensurePossibleRejectionHandled(this._settledValue);
+Promise.prototype._fulfillPromises = function Promise$_fulfillPromises(len) {
+    len = this._length();
+    for (var i = 0; i < len; i+= 5) {
+        this._settlePromiseAt(i);
     }
 };
 
 Promise.prototype._ensurePossibleRejectionHandled =
-function Promise$_ensurePossibleRejectionHandled(reason) {
+function Promise$_ensurePossibleRejectionHandled() {
+    this._setRejectionIsUnhandled();
     if (CapturedTrace.possiblyUnhandledRejection !== void 0) {
-        if (isObject(reason)) {
-            var handledState = reason["__promiseHandled__"];
-            var newReason = reason;
+        async.invokeLater(this._notifyUnhandledRejection, this, void 0);
+    }
+};
 
-            if (handledState === void 0) {
-                newReason = ensurePropertyExpansion(reason,
-                    "__promiseHandled__", 0);
-                handledState = 0;
-            }
-            else if (isHandled(handledState)) {
-                return;
-            }
+Promise.prototype._notifyUnhandledRejection =
+function Promise$_notifyUnhandledRejection() {
+    if (this._isRejectionUnhandled()) {
+        var reason = this._settledValue;
+        var trace = this._getCarriedStackTrace();
 
-            if (!isStackAttached(handledState))  {
-                this._attachExtraTrace(newReason);
-            }
-            async.invoke(this._unhandledRejection, this, newReason);
+        this._unsetRejectionIsUnhandled();
+
+        if (trace !== void 0) {
+            this._unsetCarriedStackTrace();
+            reason = trace;
+        }
+        if (typeof CapturedTrace.possiblyUnhandledRejection === "function") {
+            CapturedTrace.possiblyUnhandledRejection(reason, this);
         }
     }
 };
@@ -2770,7 +2726,8 @@ Promise.prototype._popContext = function Promise$_popContext() {
     contextStack.pop();
 };
 
-function Promise$_All(promises, PromiseArray, caller, boundTo) {
+function Promise$_CreatePromiseArray(
+    promises, PromiseArrayConstructor, caller, boundTo) {
 
     var list = null;
     if (isArray(promises)) {
@@ -2786,11 +2743,11 @@ function Promise$_All(promises, PromiseArray, caller, boundTo) {
         }
     }
     if (list !== null) {
-        return new PromiseArray(
+        return new PromiseArrayConstructor(
             list,
             typeof caller === "function"
                 ? caller
-                : Promise$_All,
+                : Promise$_CreatePromiseArray,
             boundTo
        );
     }
@@ -2809,14 +2766,14 @@ Promise.noConflict = function() {
 };
 
 if (!CapturedTrace.isSupported()) {
-    Promise.debugging = function(){};
+    Promise.longStackTraces = function(){};
     debugging = false;
 }
 
 Promise._makeSelfResolutionError = makeSelfResolutionError;
 require("./finally.js")(Promise, NEXT_FILTER);
 require("./direct_resolve.js")(Promise);
-require("./thenables.js")(Promise);
+require("./thenables.js")(Promise, INTERNAL);
 Promise.RangeError = RangeError;
 Promise.CancellationError = CancellationError;
 Promise.TimeoutError = TimeoutError;
@@ -2824,18 +2781,18 @@ Promise.TypeError = TypeError;
 Promise.RejectionError = RejectionError;
 require('./timers.js')(Promise,INTERNAL);
 require('./synchronous_inspection.js')(Promise);
-require('./any.js')(Promise,Promise$_All,PromiseArray);
+require('./any.js')(Promise,Promise$_CreatePromiseArray,PromiseArray);
 require('./race.js')(Promise,INTERNAL);
 require('./call_get.js')(Promise);
-require('./filter.js')(Promise,Promise$_All,PromiseArray,apiRejection);
+require('./filter.js')(Promise,Promise$_CreatePromiseArray,PromiseArray,apiRejection);
 require('./generators.js')(Promise,apiRejection,INTERNAL);
-require('./map.js')(Promise,Promise$_All,PromiseArray,apiRejection);
+require('./map.js')(Promise,Promise$_CreatePromiseArray,PromiseArray,apiRejection);
 require('./nodeify.js')(Promise);
 require('./promisify.js')(Promise,INTERNAL);
 require('./props.js')(Promise,PromiseArray);
-require('./reduce.js')(Promise,Promise$_All,PromiseArray,apiRejection);
-require('./settle.js')(Promise,Promise$_All,PromiseArray);
-require('./some.js')(Promise,Promise$_All,PromiseArray,apiRejection);
+require('./reduce.js')(Promise,Promise$_CreatePromiseArray,PromiseArray,apiRejection,INTERNAL);
+require('./settle.js')(Promise,Promise$_CreatePromiseArray,PromiseArray);
+require('./some.js')(Promise,Promise$_CreatePromiseArray,PromiseArray,apiRejection);
 require('./progress.js')(Promise,isPromiseArrayProxy);
 require('./cancel.js')(Promise,INTERNAL);
 
@@ -2846,7 +2803,7 @@ return Promise;
 
 },{"./any.js":1,"./assert.js":2,"./async.js":3,"./call_get.js":5,"./cancel.js":6,"./captured_trace.js":7,"./catch_filter.js":8,"./direct_resolve.js":9,"./errors.js":10,"./errors_api_rejection":11,"./filter.js":13,"./finally.js":14,"./generators.js":15,"./global.js":16,"./map.js":17,"./nodeify.js":18,"./progress.js":19,"./promise_array.js":21,"./promise_resolver.js":23,"./promisify.js":25,"./props.js":27,"./race.js":29,"./reduce.js":30,"./settle.js":32,"./some.js":34,"./synchronous_inspection.js":36,"./thenables.js":37,"./timers.js":38,"./util.js":39}],21:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2865,11 +2822,12 @@ return Promise;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, INTERNAL) {
 var ASSERT = require("./assert.js");
-var ensureNotHandled = require("./errors.js").ensureNotHandled;
+var canAttach = require("./errors.js").canAttach;
 var util = require("./util.js");
 var async = require("./async.js");
 var hasOwn = {}.hasOwnProperty;
@@ -3038,10 +2996,10 @@ PromiseArray.prototype._resolve = function PromiseArray$_resolve(value) {
 
 PromiseArray.prototype.__hardReject__ =
 PromiseArray.prototype._reject = function PromiseArray$_reject(reason) {
-    ensureNotHandled(reason);
     this._values = null;
-    this._promise._attachExtraTrace(reason);
-    this._promise._reject(reason);
+    var trace = canAttach(reason) ? reason : new Error(reason + "");
+    this._promise._attachExtraTrace(trace);
+    this._promise._reject(reason, trace);
 };
 
 PromiseArray.prototype._promiseProgressed =
@@ -3076,7 +3034,7 @@ return PromiseArray;
 
 },{"./assert.js":2,"./async.js":3,"./errors.js":10,"./util.js":39}],22:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3095,6 +3053,7 @@ return PromiseArray;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var TypeError = require("./errors.js").TypeError;
@@ -3143,7 +3102,7 @@ module.exports = PromiseInspection;
 
 },{"./errors.js":10}],23:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3162,6 +3121,7 @@ module.exports = PromiseInspection;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var util = require("./util.js");
@@ -3179,14 +3139,21 @@ function isUntypedError(obj) {
 }
 
 function wrapAsRejectionError(obj) {
+    var ret;
     if (isUntypedError(obj)) {
-        return new RejectionError(obj);
+        ret = new RejectionError(obj);
     }
-    return obj;
+    else {
+        ret = obj;
+    }
+    errors.markAsOriginatingFromRejection(ret);
+    return ret;
 }
 
 function nodebackForPromise(promise) {
     function PromiseResolver$_callback(err, value) {
+        if (promise === null) return;
+
         if (err) {
             var wrapped = wrapAsRejectionError(maybeWrapAsError(err));
             promise._attachExtraTrace(wrapped);
@@ -3201,6 +3168,8 @@ function nodebackForPromise(promise) {
                 promise._fulfill(value);
             }
         }
+
+        promise = null;
     }
     return PromiseResolver$_callback;
 }
@@ -3246,8 +3215,13 @@ PromiseResolver.prototype.fulfill = function PromiseResolver$resolve(value) {
 
 PromiseResolver.prototype.reject = function PromiseResolver$reject(reason) {
     var promise = this.promise;
-    promise._attachExtraTrace(reason);
+    errors.markAsOriginatingFromRejection(reason);
+    var trace = errors.canAttach(reason) ? reason : new Error(reason + "");
+    promise._attachExtraTrace(trace);
     async.invoke(promise._reject, promise, reason);
+    if (trace !== reason) {
+        async.invoke(this._setCarriedStackTrace, this, trace);
+    }
 };
 
 PromiseResolver.prototype.progress =
@@ -3271,11 +3245,18 @@ PromiseResolver.prototype.toJSON = function PromiseResolver$toJSON() {
     return this.promise.toJSON();
 };
 
+PromiseResolver.prototype._setCarriedStackTrace =
+function PromiseResolver$_setCarriedStackTrace(trace) {
+    if (this.promise.isRejected()) {
+        this.promise._setCarriedStackTrace(trace);
+    }
+};
+
 module.exports = PromiseResolver;
 
 },{"./async.js":3,"./errors.js":10,"./es5.js":12,"./util.js":39}],24:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3294,12 +3275,12 @@ module.exports = PromiseResolver;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, INTERNAL) {
 var errors = require("./errors.js");
 var TypeError = errors.TypeError;
-var ensureNotHandled = errors.ensureNotHandled;
 var util = require("./util.js");
 var isArray = util.isArray;
 var errorObj = util.errorObj;
@@ -3327,15 +3308,19 @@ PromiseSpawn.prototype._run = function PromiseSpawn$_run() {
 PromiseSpawn.prototype._continue = function PromiseSpawn$_continue(result) {
     if (result === errorObj) {
         this._generator = void 0;
-        this._promise._attachExtraTrace(result.e);
-        this._promise._reject(result.e);
+        var trace = errors.canAttach(result.e)
+            ? result.e : new Error(result.e + "");
+        this._promise._attachExtraTrace(trace);
+        this._promise._reject(result.e, trace);
         return;
     }
 
     var value = result.value;
     if (result.done === true) {
         this._generator = void 0;
-        this._promise._fulfill(value);
+        if (!this._promise._tryFollow(value)) {
+            this._promise._fulfill(value);
+        }
     }
     else {
         var maybePromise = Promise._cast(value, PromiseSpawn$_continue, void 0);
@@ -3362,8 +3347,8 @@ PromiseSpawn.prototype._continue = function PromiseSpawn$_continue(result) {
 };
 
 PromiseSpawn.prototype._throw = function PromiseSpawn$_throw(reason) {
-    ensureNotHandled(reason);
-    this._promise._attachExtraTrace(reason);
+    if (errors.canAttach(reason))
+        this._promise._attachExtraTrace(reason);
     this._continue(
         tryCatch1(this._generator["throw"], this._generator, reason)
    );
@@ -3380,7 +3365,7 @@ return PromiseSpawn;
 
 },{"./errors.js":10,"./util.js":39}],25:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3399,16 +3384,15 @@ return PromiseSpawn;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, INTERNAL) {
 var THIS = {};
 var util = require("./util.js");
 var es5 = require("./es5.js");
-var errors = require("./errors.js");
 var nodebackForPromise = require("./promise_resolver.js")
     ._nodebackForPromise;
-var RejectionError = errors.RejectionError;
 var withAppended = util.withAppended;
 var maybeWrapAsError = util.maybeWrapAsError;
 var canEvaluate = util.canEvaluate;
@@ -3473,21 +3457,61 @@ var inheritedMethods = (function() {
     }
 })();
 
-Promise.prototype.error = function Promise$_error(fn) {
-    return this.caught(RejectionError, fn);
-};
+function switchCaseArgumentOrder(likelyArgumentCount) {
+    var ret = [likelyArgumentCount];
+    var min = Math.max(0, likelyArgumentCount - 1 - 5);
+    for(var i = likelyArgumentCount - 1; i >= min; --i) {
+        if (i === likelyArgumentCount) continue;
+        ret.push(i);
+    }
+    for(var i = likelyArgumentCount + 1; i <= 5; ++i) {
+        ret.push(i);
+    }
+    return ret;
+}
 
-function makeNodePromisifiedEval(callback, receiver, originalName) {
-    function getCall(count) {
+function parameterDeclaration(parameterCount) {
+    var ret = new Array(parameterCount);
+    for(var i = 0; i < ret.length; ++i) {
+        ret[i] = "_arg" + i;
+    }
+    return ret.join(", ");
+}
+
+function parameterCount(fn) {
+    if (typeof fn.length === "number") {
+        return Math.max(Math.min(fn.length, 1023 + 1), 0);
+    }
+    return 0;
+}
+
+function propertyAccess(id) {
+    var rident = /^[a-z$_][a-z$_0-9]*$/i;
+
+    if (rident.test(id)) {
+        return "." + id;
+    }
+    else return "['" + id.replace(/(['\\])/g, "\\$1") + "']";
+}
+
+function makeNodePromisifiedEval(callback, receiver, originalName, fn) {
+    var newParameterCount = Math.max(0, parameterCount(fn) - 1);
+    var argumentOrder = switchCaseArgumentOrder(newParameterCount);
+
+    var callbackName = (typeof originalName === "string" ?
+        originalName + "Async" :
+        "promisified");
+
+    function generateCallForArgumentCount(count) {
         var args = new Array(count);
         for (var i = 0, len = args.length; i < len; ++i) {
-            args[i] = "a" + (i+1);
+            args[i] = "arguments[" + i + "]";
         }
         var comma = count > 0 ? "," : "";
 
         if (typeof callback === "string" &&
             receiver === THIS) {
-            return "this['" + callback + "']("+args.join(",") +
+            return "this" + propertyAccess(callback) + "("+args.join(",") +
                 comma +" fn);"+
                 "break;";
         }
@@ -3499,42 +3523,40 @@ function makeNodePromisifiedEval(callback, receiver, originalName) {
         "break;";
     }
 
-    function getArgs() {
-        return "var args = new Array(len + 1);" +
-        "var i = 0;" +
-        "for (var i = 0; i < len; ++i) { " +
-        "   args[i] = arguments[i];" +
-        "}" +
-        "args[i] = fn;";
-    }
+    function generateArgumentSwitchCase() {
+        var ret = "";
+        for(var i = 0; i < argumentOrder.length; ++i) {
+            ret += "case " + argumentOrder[i] +":" +
+                generateCallForArgumentCount(argumentOrder[i]);
+        }
+        ret += "default: var args = new Array(len + 1);" +
+            "var i = 0;" +
+            "for (var i = 0; i < len; ++i) { " +
+            "   args[i] = arguments[i];" +
+            "}" +
+            "args[i] = fn;" +
 
-    var callbackName = (typeof originalName === "string" ?
-        originalName + "Async" :
-        "promisified");
+            (typeof callback === "string"
+            ? "this" + propertyAccess(callback) + ".apply("
+            : "callback.apply(") +
+
+            (receiver === THIS ? "this" : "receiver") +
+            ", args); break;";
+        return ret;
+    }
 
     return new Function("Promise", "callback", "receiver",
             "withAppended", "maybeWrapAsError", "nodebackForPromise",
             "INTERNAL",
         "var ret = function " + callbackName +
-        "(a1, a2, a3, a4, a5) {\"use strict\";" +
+        "(" + parameterDeclaration(newParameterCount) + ") {\"use strict\";" +
         "var len = arguments.length;" +
         "var promise = new Promise(INTERNAL);"+
         "promise._setTrace(" + callbackName + ", void 0);" +
         "var fn = nodebackForPromise(promise);"+
-        "try{" +
+        "try {" +
         "switch(len) {" +
-        "case 1:" + getCall(1) +
-        "case 2:" + getCall(2) +
-        "case 3:" + getCall(3) +
-        "case 0:" + getCall(0) +
-        "case 4:" + getCall(4) +
-        "case 5:" + getCall(5) +
-        "default: " + getArgs() + (typeof callback === "string"
-            ? "this['" + callback + "'].apply("
-            : "callback.apply("
-       ) +
-            (receiver === THIS ? "this" : "receiver") +
-        ", args); break;" +
+        generateArgumentSwitchCase() +
         "}" +
         "}" +
         "catch(e){ " +
@@ -3588,13 +3610,14 @@ function _promisify(callback, receiver, isAll) {
             var promisifiedKey = key + "Async";
             notEnumerableProp(callback, originalKey, fn);
             callback[promisifiedKey] =
-                makeNodePromisified(originalKey, THIS, key);
+                makeNodePromisified(originalKey, THIS,
+                    key, fn);
         }
         if (methods.length > 16) f.prototype = callback;
         return callback;
     }
     else {
-        return makeNodePromisified(callback, receiver, void 0);
+        return makeNodePromisified(callback, receiver, void 0, callback);
     }
 }
 
@@ -3624,9 +3647,9 @@ Promise.promisifyAll = function Promise$PromisifyAll(target) {
 };
 
 
-},{"./assert.js":2,"./errors.js":10,"./es5.js":12,"./promise_resolver.js":23,"./util.js":39}],26:[function(require,module,exports){
+},{"./assert.js":2,"./es5.js":12,"./promise_resolver.js":23,"./util.js":39}],26:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3645,6 +3668,7 @@ Promise.promisifyAll = function Promise$PromisifyAll(target) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, PromiseArray) {
@@ -3705,7 +3729,7 @@ return PropertiesPromiseArray;
 
 },{"./assert.js":2,"./es5.js":12,"./util.js":39}],27:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3724,6 +3748,7 @@ return PropertiesPromiseArray;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, PromiseArray) {
@@ -3771,7 +3796,7 @@ module.exports = function(Promise, PromiseArray) {
 
 },{"./errors_api_rejection":11,"./properties_promise_array.js":26,"./util.js":39}],28:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3790,6 +3815,7 @@ module.exports = function(Promise, PromiseArray) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var ASSERT = require("./assert.js");
@@ -3908,7 +3934,7 @@ module.exports = Queue;
 
 },{"./assert.js":2}],29:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3927,6 +3953,7 @@ module.exports = Queue;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, INTERNAL) {
@@ -3994,7 +4021,7 @@ module.exports = function(Promise, INTERNAL) {
 
 },{"./errors_api_rejection.js":11,"./util.js":39}],30:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4013,11 +4040,65 @@ module.exports = function(Promise, INTERNAL) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
-module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
+module.exports = function(
+    Promise, Promise$_CreatePromiseArray,
+    PromiseArray, apiRejection, INTERNAL) {
 
     var ASSERT = require("./assert.js");
+
+    function Reduction(callback, index, accum, items, receiver) {
+        this.promise = new Promise(INTERNAL);
+        this.index = index;
+        this.length = items.length;
+        this.items = items;
+        this.callback = callback;
+        this.receiver = receiver;
+        this.accum = accum;
+    }
+
+    Reduction.prototype.reject = function Reduction$reject(e) {
+        this.promise._reject(e);
+    };
+
+    Reduction.prototype.fulfill = function Reduction$fulfill(value, index) {
+        this.accum = value;
+        this.index = index + 1;
+        this.iterate();
+    };
+
+    Reduction.prototype.iterate = function Reduction$iterate() {
+        var i = this.index;
+        var len = this.length;
+        var items = this.items;
+        var result = this.accum;
+        var receiver = this.receiver;
+        var callback = this.callback;
+        var iterate = this.iterate;
+
+        for(; i < len; ++i) {
+            result = Promise._cast(
+                callback.call(
+                    receiver,
+                    result,
+                    items[i],
+                    i,
+                    len
+                ),
+                iterate,
+                void 0
+            );
+
+            if (result instanceof Promise) {
+                result._then(
+                    this.fulfill, this.reject, void 0, this, i, iterate);
+                return;
+            }
+        }
+        this.promise._fulfill(result);
+    };
 
     function Promise$_reducer(fulfilleds, initialValue) {
         var fn = this;
@@ -4036,37 +4117,17 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
         }
         else {
             startIndex = 1;
-            if (len > 0) {
-                for (var i = 0; i < len; ++i) {
-                    if (fulfilleds[i] === void 0 &&
-                        !(i in fulfilleds)) {
-                        continue;
-                    }
-                    accum = fulfilleds[i];
-                    startIndex = i + 1;
-                    break;
-                }
-            }
+            if (len > 0) accum = fulfilleds[0];
         }
-        if (receiver === void 0) {
-            for (var i = startIndex; i < len; ++i) {
-                if (fulfilleds[i] === void 0 &&
-                    !(i in fulfilleds)) {
-                    continue;
-                }
-                accum = fn(accum, fulfilleds[i], i, len);
-            }
+        var i = startIndex;
+
+        if (i >= len) {
+            return accum;
         }
-        else {
-            for (var i = startIndex; i < len; ++i) {
-                if (fulfilleds[i] === void 0 &&
-                    !(i in fulfilleds)) {
-                    continue;
-                }
-                accum = fn.call(receiver, accum, fulfilleds[i], i, len);
-            }
-        }
-        return accum;
+
+        var reduction = new Reduction(fn, i, accum, fulfilleds, receiver);
+        reduction.iterate();
+        return reduction.promise;
     }
 
     function Promise$_unpackReducer(fulfilleds) {
@@ -4106,7 +4167,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
                 }
             }
 
-            return Promise$_All(promises, PromiseArray, caller,
+            return Promise$_CreatePromiseArray(promises, PromiseArray, caller,
                 useBound === true && promises._isBound()
                     ? promises._boundTo
                     : void 0)
@@ -4116,7 +4177,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
                     initialValue: initialValue
                 }, void 0, Promise.reduce);
         }
-        return Promise$_All(promises, PromiseArray, caller,
+        return Promise$_CreatePromiseArray(promises, PromiseArray, caller,
                 useBound === true && promises._isBound()
                     ? promises._boundTo
                     : void 0).promise()
@@ -4137,7 +4198,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
 
 },{"./assert.js":2}],31:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4156,6 +4217,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var global = require("./global.js");
@@ -4164,12 +4226,32 @@ var schedule;
 if (typeof process !== "undefined" && process !== null &&
     typeof process.cwd === "function" &&
     typeof process.nextTick === "function") {
+    if (process.version.indexOf("v0.10.") === 0) {
+        schedule = (function () {
+            var domain = require("domain");
+            var activeDomain = null;
+            var callback = null;
+            function Promise$_Scheduler() {
+                var fn = callback;
+                var domain = activeDomain;
+                activeDomain = null;
+                callback = null;
+                if (domain != null) domain.run(fn); else fn();
 
-    schedule = process.nextTick;
+            }
+            return function schedule(fn) {
+                activeDomain = domain.active;
+                callback = fn;
+                process.nextTick(Promise$_Scheduler);
+            };
+        })();
+    } else {
+        schedule = process.nextTick;
+    }
 }
-else if ((typeof MutationObserver === "function" ||
-        typeof WebkitMutationObserver === "function" ||
-        typeof WebKitMutationObserver === "function") &&
+else if ((typeof global.MutationObserver === "function" ||
+        typeof global.WebkitMutationObserver === "function" ||
+        typeof global.WebKitMutationObserver === "function") &&
         typeof document !== "undefined" &&
         typeof document.createElement === "function") {
 
@@ -4226,11 +4308,11 @@ else if (typeof global.postMessage === "function" &&
 
     })();
 }
-else if (typeof MessageChannel === "function") {
+else if (typeof global.MessageChannel === "function") {
     schedule = (function(){
         var queuedFn = void 0;
 
-        var channel = new MessageChannel();
+        var channel = new global.MessageChannel();
         channel.port1.onmessage = function Promise$_Scheduler() {
                 var fn = queuedFn;
                 queuedFn = void 0;
@@ -4256,9 +4338,9 @@ else {
 
 module.exports = schedule;
 
-},{"./assert.js":2,"./global.js":16}],32:[function(require,module,exports){
+},{"./assert.js":2,"./global.js":16,"domain":40}],32:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4277,15 +4359,17 @@ module.exports = schedule;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
-module.exports = function(Promise, Promise$_All, PromiseArray) {
+module.exports =
+    function(Promise, Promise$_CreatePromiseArray, PromiseArray) {
 
     var SettledPromiseArray = require("./settled_promise_array.js")(
         Promise, PromiseArray);
 
     function Promise$_Settle(promises, useBound, caller) {
-        return Promise$_All(
+        return Promise$_CreatePromiseArray(
             promises,
             SettledPromiseArray,
             caller,
@@ -4307,7 +4391,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray) {
 
 },{"./settled_promise_array.js":33}],33:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4326,6 +4410,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise, PromiseArray) {
@@ -4369,7 +4454,7 @@ return SettledPromiseArray;
 
 },{"./assert.js":2,"./promise_inspection.js":22,"./util.js":39}],34:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4388,9 +4473,11 @@ return SettledPromiseArray;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
-module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
+module.exports =
+function(Promise, Promise$_CreatePromiseArray, PromiseArray, apiRejection) {
 
     var SomePromiseArray = require("./some_promise_array.js")(PromiseArray);
     var ASSERT = require("./assert.js");
@@ -4399,7 +4486,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
         if ((howMany | 0) !== howMany || howMany < 0) {
             return apiRejection("expecting a positive integer");
         }
-        var ret = Promise$_All(
+        var ret = Promise$_CreatePromiseArray(
             promises,
             SomePromiseArray,
             caller,
@@ -4428,7 +4515,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
 
 },{"./assert.js":2,"./some_promise_array.js":35}],35:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4447,6 +4534,7 @@ module.exports = function(Promise, Promise$_All, PromiseArray, apiRejection) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function (PromiseArray) {
@@ -4560,7 +4648,7 @@ return SomePromiseArray;
 
 },{"./errors.js":10,"./util.js":39}],36:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4579,6 +4667,7 @@ return SomePromiseArray;
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 module.exports = function(Promise) {
@@ -4591,7 +4680,7 @@ module.exports = function(Promise) {
 
 },{"./promise_inspection.js":22}],37:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4610,14 +4699,16 @@ module.exports = function(Promise) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
-module.exports = function(Promise) {
+module.exports = function(Promise, INTERNAL) {
     var ASSERT = require("./assert.js");
     var util = require("./util.js");
+    var canAttach = require("./errors.js").canAttach;
     var errorObj = util.errorObj;
     var isObject = util.isObject;
-    var tryCatch2 = util.tryCatch2;
+
     function getThen(obj) {
         try {
             return obj.then;
@@ -4633,10 +4724,24 @@ module.exports = function(Promise) {
             if (obj instanceof Promise) {
                 return obj;
             }
+            else if (isAnyBluebirdPromise(obj)) {
+                var ret = new Promise(INTERNAL);
+                ret._setTrace(caller, void 0);
+                obj._then(
+                    ret._fulfillUnchecked,
+                    ret._rejectUncheckedCheckError,
+                    ret._progressUnchecked,
+                    ret,
+                    null,
+                    void 0
+                );
+                ret._setFollowing();
+                return ret;
+            }
             var then = getThen(obj);
             if (then === errorObj) {
                 caller = typeof caller === "function" ? caller : Promise$_Cast;
-                if (originalPromise !== void 0) {
+                if (originalPromise !== void 0 && canAttach(then.e)) {
                     originalPromise._attachExtraTrace(then.e);
                 }
                 return Promise.reject(then.e, caller);
@@ -4649,19 +4754,31 @@ module.exports = function(Promise) {
         return obj;
     }
 
+    var hasProp = {}.hasOwnProperty;
+    function isAnyBluebirdPromise(obj) {
+        return hasProp.call(obj, "_promise0");
+    }
+
     function Promise$_doThenable(x, then, caller, originalPromise) {
         var resolver = Promise.defer(caller);
-
         var called = false;
-        var ret = tryCatch2(then, x,
-            Promise$_resolveFromThenable, Promise$_rejectFromThenable);
-
-        if (ret === errorObj && !called) {
-            called = true;
-            if (originalPromise !== void 0) {
-                originalPromise._attachExtraTrace(ret.e);
+        try {
+            then.call(
+                x,
+                Promise$_resolveFromThenable,
+                Promise$_rejectFromThenable,
+                Promise$_progressFromThenable
+            );
+        }
+        catch(e) {
+            if (!called) {
+                called = true;
+                var trace = canAttach(e) ? e : new Error(e + "");
+                if (originalPromise !== void 0) {
+                    originalPromise._attachExtraTrace(trace);
+                }
+                resolver.promise._reject(e, trace);
             }
-            resolver.reject(ret.e);
         }
         return resolver.promise;
 
@@ -4674,7 +4791,7 @@ module.exports = function(Promise) {
                 if (originalPromise !== void 0) {
                     originalPromise._attachExtraTrace(e);
                 }
-                resolver.reject(e);
+                resolver.promise._reject(e, void 0);
                 return;
             }
             resolver.resolve(y);
@@ -4683,19 +4800,28 @@ module.exports = function(Promise) {
         function Promise$_rejectFromThenable(r) {
             if (called) return;
             called = true;
+            var trace = canAttach(r) ? r : new Error(r + "");
             if (originalPromise !== void 0) {
-                originalPromise._attachExtraTrace(r);
+                originalPromise._attachExtraTrace(trace);
             }
-            resolver.reject(r);
+            resolver.promise._reject(r, trace);
+        }
+
+        function Promise$_progressFromThenable(v) {
+            if (called) return;
+            var promise = resolver.promise;
+            if (typeof promise._progress === "function") {
+                promise._progress(v);
+            }
         }
     }
 
     Promise._cast = Promise$_Cast;
 };
 
-},{"./assert.js":2,"./util.js":39}],38:[function(require,module,exports){
+},{"./assert.js":2,"./errors.js":10,"./util.js":39}],38:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4714,6 +4840,7 @@ module.exports = function(Promise) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 
@@ -4735,6 +4862,7 @@ global.setTimeout( function(_) {
 module.exports = function(Promise, INTERNAL) {
     var util = require("./util.js");
     var ASSERT = require("./assert.js");
+    var errors = require("./errors.js");
     var apiRejection = require("./errors_api_rejection")(Promise);
     var TimeoutError = Promise.TimeoutError;
 
@@ -4743,7 +4871,8 @@ module.exports = function(Promise, INTERNAL) {
         if (typeof message !== "string") {
             message = "operation timed out after" + " " + ms + " ms"
         }
-        var err = new TimeoutError(message)
+        var err = new TimeoutError(message);
+        errors.markAsOriginatingFromRejection(err);
         promise._attachExtraTrace(err);
         promise._rejectUnchecked(err);
     };
@@ -4757,9 +4886,7 @@ module.exports = function(Promise, INTERNAL) {
             ms = value;
             value = void 0;
         }
-        if ((ms | 0) !== ms || ms < 0) {
-            return apiRejection("expecting a positive integer");
-        }
+        ms = +ms;
         if (typeof caller !== "function") {
             caller = Promise.delay;
         }
@@ -4792,9 +4919,7 @@ module.exports = function(Promise, INTERNAL) {
     };
 
     Promise.prototype.timeout = function Promise$timeout(ms, message) {
-        if ((ms | 0) !== ms || ms < 0) {
-            return apiRejection("expecting a positive integer");
-        }
+        ms = +ms;
 
         var ret = new Promise(INTERNAL);
         ret._setTrace(this.timeout, this);
@@ -4811,9 +4936,9 @@ module.exports = function(Promise, INTERNAL) {
 
 };
 
-},{"./assert.js":2,"./errors_api_rejection":11,"./global.js":16,"./util.js":39}],39:[function(require,module,exports){
+},{"./assert.js":2,"./errors.js":10,"./errors_api_rejection":11,"./global.js":16,"./util.js":39}],39:[function(require,module,exports){
 /**
- * Copyright (c) 2013 Petka Antonov
+ * Copyright (c) 2014 Petka Antonov
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4832,6 +4957,7 @@ module.exports = function(Promise, INTERNAL) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
  */
 "use strict";
 var global = require("./global.js");
@@ -4852,28 +4978,6 @@ var haveGetters = (function(){
     }
 
 })();
-
-var ensurePropertyExpansion = function(obj, prop, value) {
-    try {
-        notEnumerableProp(obj, prop, value);
-        return obj;
-    }
-    catch (e) {
-        var ret = {};
-        var keys = es5.keys(obj);
-        for (var i = 0, len = keys.length; i < len; ++i) {
-            try {
-                var key = keys[i];
-                ret[key] = obj[key];
-            }
-            catch (err) {
-                ret[key] = err;
-            }
-        }
-        notEnumerableProp(ret, prop, value);
-        return ret;
-    }
-};
 
 var canEvaluate = (function() {
     if (typeof window !== "undefined" && window !== null &&
@@ -5003,7 +5107,6 @@ var ret = {
     notEnumerableProp: notEnumerableProp,
     isPrimitive: isPrimitive,
     isObject: isObject,
-    ensurePropertyExpansion: ensurePropertyExpansion,
     canEvaluate: canEvaluate,
     deprecated: deprecated,
     errorObj: errorObj,
@@ -5019,9 +5122,13 @@ var ret = {
 
 module.exports = ret;
 
-},{"./assert.js":2,"./es5.js":12,"./global.js":16}]},{},[4])
-(4)
-//trick uglify-js into not minifying
-});
+},{"./assert.js":2,"./es5.js":12,"./global.js":16}],40:[function(require,module,exports){
 
+// not implemented
+// The reason for having an empty file and not throwing is to allow
+// untraditional implementation of this module.
+
+},{}]},{},[4])
+(4)
+});
 ;

@@ -12,7 +12,7 @@
     "grunt-es6-module-transpiler": "~0.6.0",
     "load-grunt-config": "~0.5.0",
     "benchmark": "git://github.com/bestiejs/benchmark.js",
-    "lodash": "~2.3.0",
+    "lodash": "~2.4.1",
     "grunt-cli": "~0.1.10",
     "load-grunt-tasks": "~0.2.0",
     "grunt-contrib-concat": "~0.3.0",
@@ -40,5 +40,8 @@
     "events"
   ],
   "author": "Nitin Joshi & Stefan Penner",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "benchmark": "git://github.com/bestiejs/benchmark.js"
+  }
 }
