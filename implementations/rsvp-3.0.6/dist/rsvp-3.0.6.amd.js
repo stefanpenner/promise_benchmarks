@@ -2,7 +2,7 @@
   @class RSVP
   @module RSVP
   */
-define('rsvp/all-settled', [
+define('rsvp-3.0.6/all-settled', [
     './promise',
     './utils',
     'exports'
@@ -113,7 +113,7 @@ define('rsvp/all-settled', [
         };
     }
 });
-define('rsvp/all', [
+define('rsvp-3.0.6/all', [
     './promise',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -133,7 +133,7 @@ define('rsvp/all', [
         return Promise.all(array, label);
     };
 });
-define('rsvp/asap', ['exports'], function (__exports__) {
+define('rsvp-3.0.6/asap', ['exports'], function (__exports__) {
     'use strict';
     __exports__['default'] = function asap(callback, arg) {
         var length = queue.push([
@@ -188,7 +188,7 @@ define('rsvp/asap', ['exports'], function (__exports__) {
         scheduleFlush = useSetTimeout();
     }
 });
-define('rsvp/config', [
+define('rsvp-3.0.6/config', [
     './events',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -213,7 +213,7 @@ define('rsvp/config', [
     __exports__.config = config;
     __exports__.configure = configure;
 });
-define('rsvp/defer', [
+define('rsvp-3.0.6/defer', [
     './promise',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -260,7 +260,7 @@ define('rsvp/defer', [
         return deferred;
     };
 });
-define('rsvp/events', ['exports'], function (__exports__) {
+define('rsvp-3.0.6/events', ['exports'], function (__exports__) {
     'use strict';
     function indexOf(callbacks, callback) {
         for (var i = 0, l = callbacks.length; i < l; i++) {
@@ -322,7 +322,7 @@ define('rsvp/events', ['exports'], function (__exports__) {
         }
     };
 });
-define('rsvp/filter', [
+define('rsvp-3.0.6/filter', [
     './promise',
     './utils',
     'exports'
@@ -440,7 +440,7 @@ define('rsvp/filter', [
         });
     };
 });
-define('rsvp/hash-settled', [
+define('rsvp-3.0.6/hash-settled', [
     './promise',
     './utils',
     'exports'
@@ -600,7 +600,7 @@ define('rsvp/hash-settled', [
         };
     }
 });
-define('rsvp/hash', [
+define('rsvp-3.0.6/hash', [
     './promise',
     './utils',
     'exports'
@@ -734,7 +734,7 @@ define('rsvp/hash', [
         });
     };
 });
-define('rsvp/instrument', [
+define('rsvp-3.0.6/instrument', [
     './config',
     './utils',
     'exports'
@@ -761,7 +761,7 @@ define('rsvp/instrument', [
         }
     };
 });
-define('rsvp/map', [
+define('rsvp-3.0.6/map', [
     './promise',
     './utils',
     'exports'
@@ -862,7 +862,7 @@ define('rsvp/map', [
         });
     };
 });
-define('rsvp/node', [
+define('rsvp-3.0.6/node', [
     './promise',
     './utils',
     'exports'
@@ -1055,7 +1055,7 @@ define('rsvp/node', [
         return denodeifiedFunction;
     };
 });
-define('rsvp/promise', [
+define('rsvp-3.0.6/promise', [
     './config',
     './events',
     './instrument',
@@ -1387,7 +1387,7 @@ define('rsvp/promise', [
         publish(promise, promise._state = REJECTED);
     }
 });
-define('rsvp/promise/all', [
+define('rsvp-3.0.6/promise/all', [
     '../utils',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -1481,7 +1481,7 @@ define('rsvp/promise/all', [
         }, label);
     };
 });
-define('rsvp/promise/cast', ['exports'], function (__exports__) {
+define('rsvp-3.0.6/promise/cast', ['exports'], function (__exports__) {
     'use strict';
     /**
       @deprecated
@@ -1562,7 +1562,7 @@ define('rsvp/promise/cast', ['exports'], function (__exports__) {
         }, label);
     };
 });
-define('rsvp/promise/race', [
+define('rsvp-3.0.6/promise/race', [
     '../utils',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -1670,7 +1670,7 @@ define('rsvp/promise/race', [
         }, label);
     };
 });
-define('rsvp/promise/reject', ['exports'], function (__exports__) {
+define('rsvp-3.0.6/promise/reject', ['exports'], function (__exports__) {
     'use strict';
     /**
       `RSVP.Promise.reject` returns a promise rejected with the passed `reason`.
@@ -1715,7 +1715,7 @@ define('rsvp/promise/reject', ['exports'], function (__exports__) {
         }, label);
     };
 });
-define('rsvp/promise/resolve', ['exports'], function (__exports__) {
+define('rsvp-3.0.6/promise/resolve', ['exports'], function (__exports__) {
     'use strict';
     /**
       `RSVP.Promise.resolve` returns a promise that will become resolved with the
@@ -1760,7 +1760,7 @@ define('rsvp/promise/resolve', ['exports'], function (__exports__) {
         }, label);
     };
 });
-define('rsvp/race', [
+define('rsvp-3.0.6/race', [
     './promise',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -1780,7 +1780,7 @@ define('rsvp/race', [
         return Promise.race(array, label);
     };
 });
-define('rsvp/reject', [
+define('rsvp-3.0.6/reject', [
     './promise',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -1801,7 +1801,7 @@ define('rsvp/reject', [
         return Promise.reject(reason, label);
     };
 });
-define('rsvp/resolve', [
+define('rsvp-3.0.6/resolve', [
     './promise',
     'exports'
 ], function (__dependency1__, __exports__) {
@@ -1823,7 +1823,7 @@ define('rsvp/resolve', [
         return Promise.resolve(value, label);
     };
 });
-define('rsvp/rethrow', ['exports'], function (__exports__) {
+define('rsvp-3.0.6/rethrow', ['exports'], function (__exports__) {
     'use strict';
     /**
       `RSVP.rethrow` will rethrow an error on the next turn of the JavaScript event
@@ -1872,7 +1872,7 @@ define('rsvp/rethrow', ['exports'], function (__exports__) {
         throw reason;
     };
 });
-define('rsvp/utils', ['exports'], function (__exports__) {
+define('rsvp-3.0.6/utils', ['exports'], function (__exports__) {
     'use strict';
     function objectOrFunction(x) {
         return typeof x === 'function' || typeof x === 'object' && x !== null;
@@ -1911,7 +1911,7 @@ define('rsvp/utils', ['exports'], function (__exports__) {
         };
     __exports__.keysOf = keysOf;
 });
-define('rsvp', [
+define('rsvp-3.0.6', [
     './rsvp/promise',
     './rsvp/events',
     './rsvp/node',
