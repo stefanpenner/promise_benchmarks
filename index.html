@@ -1,7 +1,6 @@
 <script src='/vendor/loader.js'></script>
 <script src='/implementations/rsvp-2.0.4/dist/rsvp-2.0.4.amd.js'></script>
 <script src='/implementations/rsvp-3.0.0/dist/rsvp-3.0.0.amd.js'></script>
-<script src='/implementations/rsvp-3.0.6/dist/rsvp-3.0.6.amd.js'></script>
 <script src='/implementations/rsvp/dist/rsvp-3.0.6.amd.js'></script>
 <script src='/implementations/bluebird.js'></script>
 <script src='/implementations/when.js'></script>
@@ -10,11 +9,22 @@
 <script src='/node_modules/benchmark/benchmark.js'></script>
 
 <script>
-  define('benchmark', [], function(){
-    return {
-      default: Benchmark
-    };
-  });
+
+	define('glob', [], function(){
+		return {
+			sync: function() {
+				return	Object.keys(requirejs._eak_seen).filter(function(name){
+					return /micro/.test(name);
+				});
+			}
+		};
+	});
+
+	define('benchmark', [], function(){
+		return {
+		  default: Benchmark
+		};
+	});
 </script>
 
 <script src='/tmp/public/promise_benchmarks.amd.js'></script>

@@ -11,7 +11,6 @@ var define, requireModule, require, requirejs;
   define.amd = 'tricked ya';
 
   requirejs = require = requireModule = function(name) {
-    requirejs._eak_seen = registry;
 
     if (seen[name]) { return seen[name]; }
 
@@ -33,6 +32,7 @@ var define, requireModule, require, requirejs;
       }
     }
 
+
     var value = callback.apply(this, reified);
     return seen[name] = exports || value;
 
@@ -52,4 +52,6 @@ var define, requireModule, require, requirejs;
       return parentBase.join("/");
     }
   };
+
+  requirejs._eak_seen = registry;
 })();
