@@ -1912,22 +1912,22 @@ define('rsvp-3.0.6/utils', ['exports'], function (__exports__) {
     __exports__.keysOf = keysOf;
 });
 define('rsvp-3.0.6', [
-    './rsvp/promise',
-    './rsvp/events',
-    './rsvp/node',
-    './rsvp/all',
-    './rsvp/all-settled',
-    './rsvp/race',
-    './rsvp/hash',
-    './rsvp/hash-settled',
-    './rsvp/rethrow',
-    './rsvp/defer',
-    './rsvp/config',
-    './rsvp/map',
-    './rsvp/resolve',
-    './rsvp/reject',
-    './rsvp/filter',
-    './rsvp/asap',
+    'rsvp-3.0.6/promise',
+    'rsvp-3.0.6/events',
+    'rsvp-3.0.6/node',
+    'rsvp-3.0.6/all',
+    'rsvp-3.0.6/all-settled',
+    'rsvp-3.0.6/race',
+    'rsvp-3.0.6/hash',
+    'rsvp-3.0.6/hash-settled',
+    'rsvp-3.0.6/rethrow',
+    'rsvp-3.0.6/defer',
+    'rsvp-3.0.6/config',
+    'rsvp-3.0.6/map',
+    'rsvp-3.0.6/resolve',
+    'rsvp-3.0.6/reject',
+    'rsvp-3.0.6/filter',
+    'rsvp-3.0.6/asap',
     'exports'
 ], function (__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __dependency15__, __dependency16__, __exports__) {
     'use strict';
