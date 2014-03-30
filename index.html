@@ -15,7 +15,7 @@
 		return {
 			sync: function() {
 				return	Object.keys(requirejs._eak_seen).filter(function(name){
-					return /micro/.test(name);
+					return /^tests/.test(name);
 				});
 			}
 		};
