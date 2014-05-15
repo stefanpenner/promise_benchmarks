@@ -1,4 +1,4 @@
-!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define('when', [], e):"undefined"!=typeof window?window.when=e():"undefined"!=typeof global?global.when=e():"undefined"!=typeof self&&(self.when=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define("when", [], e):"undefined"!=typeof window?window.when=e():"undefined"!=typeof global?global.when=e():"undefined"!=typeof self&&(self.when=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var when = module.exports = require('../when');
 
 when.callbacks = require('../callbacks');
@@ -14,7 +14,7 @@ when.poll = require('../poll');
 when.sequence = require('../sequence');
 when.timeout = require('../timeout');
 
-},{"../callbacks":2,"../cancelable":3,"../delay":4,"../function":5,"../guard":6,"../keys":7,"../node":23,"../parallel":24,"../pipeline":25,"../poll":26,"../sequence":27,"../timeout":28,"../when":29}],2:[function(require,module,exports){
+},{"../callbacks":2,"../cancelable":3,"../delay":4,"../function":5,"../guard":6,"../keys":7,"../node":25,"../parallel":26,"../pipeline":27,"../poll":28,"../sequence":29,"../timeout":30,"../when":31}],2:[function(require,module,exports){
 /** @license MIT License (c) copyright 2013-2014 original author or authors */
 
 /**
@@ -28,13 +28,10 @@ when.timeout = require('../timeout');
 (function(define) {
 define(function(require) {
 
-	var when, Promise, promise, slice, _liftAll;
-
-	when = require('./when');
-	Promise = when.Promise;
-	_liftAll = require('./lib/liftAll');
-	promise = when.promise;
-	slice = Array.prototype.slice;
+	var when = require('./when');
+	var Promise = when.Promise;
+	var _liftAll = require('./lib/liftAll');
+	var slice = Array.prototype.slice;
 
 	return {
 		lift: lift,
@@ -147,11 +144,11 @@ define(function(require) {
 	 *    promiseAjaxGet("/movies.json").then(console.log, console.error);
 	 *
 	 * @param {Function} f traditional async function to be decorated
-	 * @param {...*} [args] arguments to be prepended for the new function
+	 * @param {...*} [args] arguments to be prepended for the new function @deprecated
 	 * @returns {Function} a promise-returning function
 	 */
 	function lift(f/*, args...*/) {
-		var args = slice.call(arguments, 1);
+		var args = arguments.length > 1 ? slice.call(arguments, 1) : [];
 		return function() {
 			return _apply(f, this, args.concat(slice.call(arguments)));
 		};
@@ -219,6 +216,8 @@ define(function(require) {
 	 * @param {number} [positions.errback] index at which asyncFunction expects to
 	 *  receive an error callback
 	 *  @returns {function} promisified function that accepts
+	 *
+	 * @deprecated
 	 */
 	function promisify(asyncFunction, positions) {
 
@@ -268,17 +267,17 @@ define(function(require) {
 
 	function alwaysUnary(fn, thisArg) {
 		return function() {
-			if(arguments.length <= 1) {
-				fn.apply(thisArg, arguments);
-			} else {
+			if (arguments.length > 1) {
 				fn.call(thisArg, slice.call(arguments));
+			} else {
+				fn.apply(thisArg, arguments);
 			}
 		};
 	}
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./lib/liftAll":16,"./when":29}],3:[function(require,module,exports){
+},{"./lib/liftAll":21,"./when":31}],3:[function(require,module,exports){
 /** @license MIT License (c) copyright B Cavalier & J Hann */
 
 /**
@@ -349,13 +348,13 @@ define(function() {
 (function(define) {
 define(function(require) {
 
-	var resolve = require('./when').resolve;
+	var when = require('./when');
 
     /**
 	 * @deprecated Use when(value).delay(ms)
      */
     return function delay(msec, value) {
-		return resolve(value).delay(msec);
+		return when(value).delay(msec);
     };
 
 });
@@ -363,7 +362,7 @@ define(function(require) {
 
 
 
-},{"./when":29}],5:[function(require,module,exports){
+},{"./when":31}],5:[function(require,module,exports){
 /** @license MIT License (c) copyright 2013-2014 original author or authors */
 
 /**
@@ -377,12 +376,10 @@ define(function(require) {
 (function(define) {
 define(function(require) {
 
-	var when, slice, attempt, _liftAll;
-
-	when = require('./when');
-	attempt = when['try'];
-	_liftAll = require('./lib/liftAll');
-	slice = Array.prototype.slice;
+	var when = require('./when');
+	var attempt = when['try'];
+	var _liftAll = require('./lib/liftAll');
+	var slice = Array.prototype.slice;
 
 	return {
 		lift: lift,
@@ -413,11 +410,11 @@ define(function(require) {
 	 * The resulting function is promise-aware, in the sense that it accepts
 	 * promise arguments, and waits for their resolution.
 	 * @param {Function} f function to be bound
-	 * @param {...*} [args] arguments to be prepended for the new function
+	 * @param {...*} [args] arguments to be prepended for the new function @deprecated
 	 * @returns {Function} a promise-returning function
 	 */
 	function lift(f /*, args... */) {
-		var args = slice.call(arguments, 1);
+		var args = arguments.length > 1 ? slice.call(arguments, 1) : [];
 		return function() {
 			return _apply(f, this, args.concat(slice.call(arguments)));
 		};
@@ -465,11 +462,9 @@ define(function(require) {
 		var funcs = slice.call(arguments, 1);
 
 		return function() {
-			var thisArg, args, firstPromise;
-
-			thisArg = this;
-			args = slice.call(arguments);
-			firstPromise = attempt.apply(thisArg, [f].concat(args));
+			var thisArg = this;
+			var args = slice.call(arguments);
+			var firstPromise = attempt.apply(thisArg, [f].concat(args));
 
 			return when.reduce(funcs, function(arg, func) {
 				return func.call(thisArg, arg);
@@ -481,7 +476,7 @@ define(function(require) {
 
 
 
-},{"./lib/liftAll":16,"./when":29}],6:[function(require,module,exports){
+},{"./lib/liftAll":21,"./when":31}],6:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -496,6 +491,7 @@ define(function(require) {
 define(function(require) {
 
 	var when = require('./when');
+	var slice = Array.prototype.slice;
 
 	guard.n = n;
 
@@ -512,7 +508,7 @@ define(function(require) {
 	function guard(condition, f) {
 		return function() {
 			var self = this;
-			var args = arguments;
+			var args = slice.call(arguments);
 
 			return when(condition(), function(exit) {
 				return when(f.apply(self, args))['finally'](exit);
@@ -555,7 +551,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"./when":29}],7:[function(require,module,exports){
+},{"./when":31}],7:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -589,6 +585,7 @@ define(function(require) {
 			var pending = 0;
 
 			for(var k in object) {
+				++pending;
 				resolveOne(object[k], k);
 			}
 
@@ -597,10 +594,8 @@ define(function(require) {
 			}
 
 			function resolveOne(x, k) {
-				++pending;
 				toPromise(x).then(function(x) {
 					results[k] = x;
-
 					if(--pending === 0) {
 						resolve(results);
 					}
@@ -630,7 +625,7 @@ define(function(require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./when":29}],8:[function(require,module,exports){
+},{"./when":31}],8:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -643,14 +638,13 @@ define(function (require) {
 	var async = require('./async');
 
 	return makePromise({
-		scheduler: new Scheduler(async),
-		monitor: typeof console !== 'undefined' ? console : void 0
+		scheduler: new Scheduler(async)
 	});
 
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./async":11,"./makePromise":17,"./scheduler":19}],9:[function(require,module,exports){
+},{"./async":11,"./makePromise":22,"./scheduler":23}],9:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -723,6 +717,97 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 },{}],10:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function() {
+
+	/**
+	 * Custom error type for promises rejected by promise.timeout
+	 * @param {string} message
+	 * @constructor
+	 */
+	function TimeoutError (message) {
+		Error.call(this);
+		this.message = message;
+		this.name = TimeoutError.name;
+		if (typeof Error.captureStackTrace === 'function') {
+			Error.captureStackTrace(this, TimeoutError);
+		}
+	}
+
+	TimeoutError.prototype = Object.create(Error.prototype);
+	TimeoutError.prototype.constructor = TimeoutError;
+
+	return TimeoutError;
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+},{}],11:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function(require) {
+
+	// Sniff "best" async scheduling option
+	// Prefer process.nextTick or MutationObserver, then check for
+	// vertx and finally fall back to setTimeout
+
+	/*jshint maxcomplexity:6*/
+	/*global process,document,setTimeout,MutationObserver,WebKitMutationObserver*/
+	var nextTick, MutationObs;
+
+	if (typeof process !== 'undefined' && process !== null &&
+		typeof process.nextTick === 'function') {
+		nextTick = function(f) {
+			process.nextTick(f);
+		};
+
+	} else if (MutationObs =
+		(typeof MutationObserver === 'function' && MutationObserver) ||
+		(typeof WebKitMutationObserver === 'function' && WebKitMutationObserver)) {
+		nextTick = (function (document, MutationObserver) {
+			var scheduled;
+			var el = document.createElement('div');
+			var o = new MutationObserver(run);
+			o.observe(el, { attributes: true });
+
+			function run() {
+				var f = scheduled;
+				scheduled = void 0;
+				f();
+			}
+
+			return function (f) {
+				scheduled = f;
+				el.setAttribute('class', 'x');
+			};
+		}(document, MutationObs));
+
+	} else {
+		nextTick = (function(cjsRequire) {
+			try {
+				// vert.x 1.x || 2.x
+				return cjsRequire('vertx').runOnLoop || cjsRequire('vertx').runOnContext;
+			} catch (ignore) {}
+
+			// capture setTimeout to avoid being caught by fake timers
+			// used in time based tests
+			var capturedSetTimeout = setTimeout;
+			return function (t) {
+				capturedSetTimeout(t, 0);
+			};
+		}(require));
+	}
+
+	return nextTick;
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+
+},{}],12:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -804,6 +889,8 @@ define(function() {
 		 * @param {array} promises
 		 * @param {number} n
 		 * @returns {Promise} promise for the earliest n fulfillment values
+		 *
+		 * @deprecated
 		 */
 		function some(promises, n) {
 			return new Promise(function(resolve, reject, notify) {
@@ -915,102 +1002,19 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
 
 (function(define) { 'use strict';
-define(function(require) {
-
-	// Sniff "best" async scheduling option
-	// Prefer process.nextTick or MutationObserver, then check for
-	// vertx and finally fall back to setTimeout
-
-	/*jshint maxcomplexity:6*/
-	/*global process,document,setTimeout,MutationObserver,WebKitMutationObserver*/
-	var nextTick, MutationObs;
-
-	if (typeof process !== 'undefined' && process !== null &&
-		typeof process.nextTick === 'function') {
-		nextTick = function(f) {
-			process.nextTick(f);
-		};
-
-	} else if (MutationObs =
-		(typeof MutationObserver === 'function' && MutationObserver) ||
-		(typeof WebKitMutationObserver === 'function' && WebKitMutationObserver)) {
-		nextTick = (function (document, MutationObserver) {
-			var scheduled;
-			var el = document.createElement('div');
-			var o = new MutationObserver(run);
-			o.observe(el, { attributes: true });
-
-			function run() {
-				var f = scheduled;
-				scheduled = void 0;
-				f();
-			}
-
-			return function (f) {
-				scheduled = f;
-				el.setAttribute('class', 'x');
-			};
-		}(document, MutationObs));
-
-	} else {
-		nextTick = (function(cjsRequire) {
-			try {
-				// vert.x 1.x || 2.x
-				return cjsRequire('vertx').runOnLoop || cjsRequire('vertx').runOnContext;
-			} catch (ignore) {}
-
-			// capture setTimeout to avoid being caught by fake timers
-			// used in time based tests
-			var capturedSetTimeout = setTimeout;
-			return function (t) {
-				capturedSetTimeout(t, 0);
-			};
-		}(require));
-	}
-
-	return nextTick;
-});
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
-
-},{}],12:[function(require,module,exports){
-/** @license MIT License (c) copyright 2010-2014 original author or authors */
-/** @author Brian Cavalier */
-/** @author John Hann */
-
-(function(define) { 'use strict';
-define(function(require) {
-
-	var setTimer = require('./timer').set;
-
-	return function(e) {
-		setTimer(function() {
-			throw e;
-		}, 0);
-	};
-});
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
-
-},{"./timer":21}],13:[function(require,module,exports){
-/** @license MIT License (c) copyright 2010-2014 original author or authors */
-/** @author Brian Cavalier */
-/** @author John Hann */
-
-(function(define) { 'use strict';
-define(function(require) {
-
-	var fatal = require('./fatal');
+define(function() {
 
 	return function flow(Promise) {
 
-		var resolve = Promise.resolve;
 		var reject = Promise.reject;
 		var origCatch = Promise.prototype['catch'];
+		var nil = Promise.nil;
 
 		/**
 		 * Handle the ultimate fulfillment value or rejection reason, and assume
@@ -1023,25 +1027,10 @@ define(function(require) {
 		 */
 		Promise.prototype.done = function(onResult, onError) {
 			var h = this._handler;
-			h.when(this._maybeFatal, noop, this, h.receiver, onResult, onError);
+			h.when({ resolve: this._maybeFatal, notify: noop, context: this,
+				receiver: h.receiver, arg: nil, fulfilled: onResult, rejected: onError,
+				progress: void 0 });
 		};
-
-		/**
-		 * Check if x is a rejected promise, and if so, delegate to this._fatal
-		 * @private
-		 * @param {*} x
-		 */
-		Promise.prototype._maybeFatal = function(x) {
-			if(Object(x) === x) {
-				resolve(x)['catch'](this._fatal);
-			}
-		};
-
-		/**
-		 * Propagate fatal errors to the host environment.
-		 * @private
-		 */
-		Promise.prototype._fatal = fatal;
 
 		/**
 		 * Add Error-type and predicate matching to catch.  Examples:
@@ -1163,9 +1152,32 @@ define(function(require) {
 	function noop() {}
 
 });
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{"./fatal":12}],14:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+/** @author Jeff Escalante */
+
+(function(define) { 'use strict';
+define(function() {
+
+	return function fold(Promise) {
+
+		Promise.prototype.fold = function(fn, arg) {
+			var promise = this._beget();
+			this._handler.fold(promise._handler, fn, arg);
+			return promise;
+		};
+
+		return Promise;
+	};
+
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+
+},{}],15:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1185,7 +1197,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1214,17 +1226,9 @@ define(function() {
 		 *  condition returns true
 		 */
 		function iterate(f, condition, handler, x) {
-			return resolve(x).then(function(x) {
-				return resolve(condition(x)).then(function(done) {
-					return done ? x : next(x);
-				});
-			});
-
-			function next(nextValue) {
-				return resolve(handler(nextValue)).then(function() {
-					return iterate(f, condition, handler, f(nextValue));
-				});
-			}
+			return unfold(function(x) {
+				return [x, f(x)];
+			}, condition, handler, x);
 		}
 
 		/**
@@ -1258,707 +1262,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],16:[function(require,module,exports){
-/** @license MIT License (c) copyright 2010-2014 original author or authors */
-/** @author Brian Cavalier */
-/** @author John Hann */
-
-(function(define) { 'use strict';
-define(function() {
-
-	return function liftAll(liftOne, combine, dst, src) {
-		if(typeof combine === 'undefined') {
-			combine = defaultCombine;
-		}
-
-		return Object.keys(src).reduce(function(dst, key) {
-			var f = src[key];
-			return typeof f === 'function' ? combine(dst, liftOne(f), key) : dst;
-		}, typeof dst === 'undefined' ? defaultDst(src) : dst);
-	};
-
-	function defaultCombine(o, f, k) {
-		o[k] = f;
-		return o;
-	}
-
-	function defaultDst(src) {
-		return typeof src === 'function' ? src.bind() : Object.create(src);
-	}
-});
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
-
 },{}],17:[function(require,module,exports){
-/** @license MIT License (c) copyright 2010-2014 original author or authors */
-/** @author Brian Cavalier */
-/** @author John Hann */
-
-(function(define) { 'use strict';
-define(function() {
-
-	return function makePromise(environment) {
-
-		var foreverPendingPromise;
-		var promiseCycleError;
-		var tasks = environment.scheduler;
-
-		var objectCreate = Object.create ||
-			function(proto) {
-				function Child() {}
-				Child.prototype = proto;
-				return new Child();
-			};
-
-		/**
-		 * Create a promise whose fate is determined by resolver
-		 * @constructor
-		 * @returns {Promise} promise
-		 * @name Promise
-		 */
-		function Promise(resolver) {
-			var self = this;
-			this._handler = new DeferredHandler();
-
-			runResolver(resolver, promiseResolve, promiseReject, promiseNotify);
-
-			/**
-			 * Transition from pre-resolution state to post-resolution state, notifying
-			 * all listeners of the ultimate fulfillment or rejection
-			 * @param {*} x resolution value
-			 */
-			function promiseResolve (x) {
-				self._handler.resolve(x);
-			}
-			/**
-			 * Reject this promise with reason, which will be used verbatim
-			 * @param {*} reason reason for the rejection, typically an Error
-			 */
-			function promiseReject (reason) {
-				self._handler.reject(reason);
-			}
-
-			/**
-			 * Issue a progress event, notifying all progress listeners
-			 * @param {*} x progress event payload to pass to all listeners
-			 */
-			function promiseNotify (x) {
-				self._handler.notify(x);
-			}
-		}
-
-		function runResolver(resolver, promiseResolve, promiseReject, promiseNotify) {
-			try {
-				resolver(promiseResolve, promiseReject, promiseNotify);
-			} catch (e) {
-				promiseReject(e);
-			}
-		}
-
-		// Creation
-
-		Promise.resolve = resolve;
-		Promise.reject = reject;
-		Promise.never = never;
-
-		Promise._defer = defer;
-
-		/**
-		 * Returns a trusted promise. If x is already a trusted promise, it is
-		 * returned, otherwise returns a new trusted Promise which follows x.
-		 * @param  {*} x
-		 * @return {Promise} promise
-		 */
-		function resolve(x) {
-			return x instanceof Promise ? x
-				: new InternalPromise(new AsyncHandler(getHandler(x)));
-		}
-
-		/**
-		 * Return a reject promise with x as its reason (x is used verbatim)
-		 * @param {*} x
-		 * @returns {Promise} rejected promise
-		 */
-		function reject(x) {
-			return new InternalPromise(new AsyncHandler(new RejectedHandler(x)));
-		}
-
-		/**
-		 * Return a promise that remains pending forever
-		 * @returns {Promise} forever-pending promise.
-		 */
-		function never() {
-			return foreverPendingPromise; // Should be frozen
-		}
-
-		/**
-		 * Creates an internal {promise, resolver} pair
-		 * @private
-		 * @returns {{resolver: DeferredHandler, promise: InternalPromise}}
-		 */
-		function defer() {
-			return new InternalPromise(new DeferredHandler());
-		}
-
-		// Transformation and flow control
-
-		/**
-		 * Transform this promise's fulfillment value, returning a new Promise
-		 * for the transformed result.  If the promise cannot be fulfilled, onRejected
-		 * is called with the reason.  onProgress *may* be called with updates toward
-		 * this promise's fulfillment.
-		 * @param [onFulfilled] {Function} fulfillment handler
-		 * @param [onRejected] {Function} rejection handler
-		 * @param [onProgress] {Function} progress handler
-		 * @return {Promise} new promise
-		 */
-		Promise.prototype.then = function(onFulfilled, onRejected, onProgress) {
-			var from = this._handler;
-			var to = new DeferredHandler(from.receiver);
-			from.when(to.resolve, to.notify, to, from.receiver, onFulfilled, onRejected, onProgress);
-
-			return new InternalPromise(to);
-		};
-
-		/**
-		 * If this promise cannot be fulfilled due to an error, call onRejected to
-		 * handle the error. Shortcut for .then(undefined, onRejected)
-		 * @param {function?} onRejected
-		 * @return {Promise}
-		 */
-		Promise.prototype['catch'] = Promise.prototype.otherwise = function(onRejected) {
-			return this.then(void 0, onRejected);
-		};
-
-		/**
-		 * Private function to bind a thisArg for this promise's handlers
-		 * @private
-		 * @param {object} thisArg `this` value for all handlers attached to
-		 *  the returned promise.
-		 * @returns {Promise}
-		 */
-		Promise.prototype._bindContext = function(thisArg) {
-			return new InternalPromise(new BoundHandler(this._handler, thisArg));
-		};
-
-		// Array combinators
-
-		Promise.all = all;
-		Promise.race = race;
-
-		/**
-		 * Return a promise that will fulfill when all promises in the
-		 * input array have fulfilled, or will reject when one of the
-		 * promises rejects.
-		 * @param {array} promises array of promises
-		 * @returns {Promise} promise for array of fulfillment values
-		 */
-		function all(promises) {
-			/*jshint maxcomplexity:6*/
-			var resolver = new DeferredHandler();
-			var len = promises.length >>> 0;
-			var pending = len;
-			var results = [];
-			var i, x;
-
-			for (i = 0; i < len; ++i) {
-				if (i in promises) {
-					x = promises[i];
-					if (maybeThenable(x)) {
-						resolveOne(resolver, results, getHandlerChecked(x), i);
-					} else {
-						results[i] = x;
-						--pending;
-					}
-				} else {
-					--pending;
-				}
-			}
-
-			if(pending === 0) {
-				resolver.resolve(results);
-			}
-
-			return new InternalPromise(resolver);
-
-			function resolveOne(resolver, results, handler, i) {
-				handler.when(noop, noop, void 0, resolver, function(x) {
-					results[i] = x;
-					if(--pending === 0) {
-						this.resolve(results);
-					}
-				}, resolver.reject, resolver.notify);
-			}
-		}
-
-		/**
-		 * Fulfill-reject competitive race. Return a promise that will settle
-		 * to the same state as the earliest input promise to settle.
-		 *
-		 * WARNING: The ES6 Promise spec requires that race()ing an empty array
-		 * must return a promise that is pending forever.  This implementation
-		 * returns a singleton forever-pending promise, the same singleton that is
-		 * returned by Promise.never(), thus can be checked with ===
-		 *
-		 * @param {array} promises array of promises to race
-		 * @returns {Promise} if input is non-empty, a promise that will settle
-		 * to the same outcome as the earliest input promise to settle. if empty
-		 * is empty, returns a promise that will never settle.
-		 */
-		function race(promises) {
-			// Sigh, race([]) is untestable unless we return *something*
-			// that is recognizable without calling .then() on it.
-			if(Object(promises) === promises && promises.length === 0) {
-				return never();
-			}
-
-			var h = new DeferredHandler();
-			for(var i=0; i<promises.length; ++i) {
-				getHandler(promises[i]).when(noop, noop, void 0, h, h.resolve, h.reject);
-			}
-
-			return new InternalPromise(h);
-		}
-
-		// Promise internals
-
-		/**
-		 * InternalPromise represents a promise that is either already
-		 * fulfilled or reject, or is following another promise, based
-		 * on the provided handler.
-		 * @private
-		 * @param {object} handler
-		 * @constructor
-		 */
-		function InternalPromise(handler) {
-			this._handler = handler;
-		}
-
-		InternalPromise.prototype = objectCreate(Promise.prototype);
-
-		/**
-		 * Get an appropriate handler for x
-		 * @private
-		 * @param {*} x
-		 * @param {object?} h optional handler to check for cycles
-		 * @returns {object} handler
-		 */
-		function getHandler(x, h) {
-			if(x instanceof Promise) {
-				return getHandlerPromise(x, h);
-			}
-			return maybeThenable(x) ? getHandlerUntrusted(x) : new FulfilledHandler(x);
-		}
-
-		function getHandlerChecked(x, h) {
-			return x instanceof Promise
-				? getHandlerPromise(x, h) : getHandlerUntrusted(x);
-		}
-
-		function getHandlerPromise(x, h) {
-			var h2 = x._handler.join();
-			return h === h2 ? promiseCycleError : h2;
-		}
-
-		function getHandlerUntrusted(x) {
-			try {
-				var untrustedThen = x.then;
-				return typeof untrustedThen === 'function'
-					? new ThenableHandler(untrustedThen, x)
-					: new FulfilledHandler(x);
-			} catch(e) {
-				return new RejectedHandler(e);
-			}
-		}
-
-		/**
-		 * Handler for a promise that is pending forever
-		 * @private
-		 * @constructor
-		 */
-		function Handler() {}
-
-		Handler.prototype.inspect = toPendingState;
-		Handler.prototype.when = noop;
-		Handler.prototype.resolve = noop;
-		Handler.prototype.reject = noop;
-		Handler.prototype.notify = noop;
-		Handler.prototype.join = function() { return this; };
-
-		Handler.prototype._env = environment.monitor || Promise;
-		Handler.prototype._addTrace = noop;
-		Handler.prototype._isMonitored = function() {
-			return typeof this._env.promiseMonitor !== 'undefined';
-		};
-
-		/**
-		 * Abstract base for handler that delegates to another handler
-		 * @private
-		 * @param {object} handler
-		 * @constructor
-		 */
-		function DelegateHandler(handler) {
-			this.handler = handler;
-		}
-
-		DelegateHandler.prototype = objectCreate(Handler.prototype);
-
-		DelegateHandler.prototype.join = function() {
-			return this.handler.join();
-		};
-
-		DelegateHandler.prototype.inspect = function() {
-			return this.handler.inspect();
-		};
-
-		DelegateHandler.prototype._addTrace = function(trace) {
-			return this.handler._addTrace(trace);
-		};
-
-		/**
-		 * Handler that manages a queue of consumers waiting on a pending promise
-		 * @private
-		 * @constructor
-		 */
-		function DeferredHandler(receiver) {
-			this.consumers = [];
-			this.receiver = receiver;
-			this.handler = void 0;
-			this.resolved = false;
-			if(this._isMonitored()) {
-				this.trace = this._env.promiseMonitor.captureStack();
-			}
-		}
-
-		DeferredHandler.prototype = objectCreate(Handler.prototype);
-
-		DeferredHandler.prototype.inspect = function() {
-			return this.resolved ? this.handler.join().inspect() : toPendingState();
-		};
-
-		DeferredHandler.prototype.resolve = function(x) {
-			this._join(getHandler(x, this));
-		};
-
-		DeferredHandler.prototype.reject = function(x) {
-			this._join(new RejectedHandler(x));
-		};
-
-		DeferredHandler.prototype.join = function() {
-			return this.resolved ? this.handler.join() : this;
-		};
-
-		DeferredHandler.prototype.run = function() {
-			var q = this.consumers;
-			var handler = this.handler = this.handler.join();
-			this.consumers = void 0;
-
-			for (var i = 0; i < q.length; i+=7) {
-				handler.when(q[i], q[i+1], q[i+2], q[i+3], q[i+4], q[i+5], q[i+6]);
-			}
-		};
-
-		DeferredHandler.prototype._join = function(handler) {
-			if(this.resolved) {
-				return;
-			}
-
-			this.resolved = true;
-			this.handler = handler;
-			tasks.enqueue(this);
-
-			if(this._isMonitored()) {
-				this.trace = handler._addTrace(this.trace);
-			}
-		};
-
-		DeferredHandler.prototype.when = function(resolve, notify, t, receiver, f, r, u) {
-			if(this.resolved) {
-				tasks.enqueue(new RunHandlerTask(resolve, notify, t, receiver, f, r, u, this.handler.join()));
-			} else {
-				this.consumers.push(resolve, notify, t, receiver, f, r, u);
-			}
-		};
-
-		DeferredHandler.prototype.notify = function(x) {
-			if(!this.resolved) {
-				tasks.enqueue(new ProgressTask(this.consumers, x));
-			}
-		};
-
-		DeferredHandler.prototype._addTrace = function(trace) {
-			return this.resolved ? this.handler._addTrace(trace) : trace;
-		};
-
-		/**
-		 * Wrap another handler and force it into a future stack
-		 * @private
-		 * @param {object} handler
-		 * @constructor
-		 */
-		function AsyncHandler(handler) {
-			DelegateHandler.call(this, handler);
-			if(this._isMonitored()) {
-				this.trace = handler._addTrace(this._env.promiseMonitor.captureStack());
-			}
-		}
-
-		AsyncHandler.prototype = objectCreate(DelegateHandler.prototype);
-
-		AsyncHandler.prototype.when = function(resolve, notify, t, receiver, f, r, u) {
-			tasks.enqueue(new RunHandlerTask(resolve, notify, t, receiver, f, r, u, this.join()));
-		};
-
-		/**
-		 * Handler that follows another handler, injecting a receiver
-		 * @private
-		 * @param {object} handler another handler to follow
-		 * @param {object=undefined} receiver
-		 * @constructor
-		 */
-		function BoundHandler(handler, receiver) {
-			DelegateHandler.call(this, handler);
-			this.receiver = receiver;
-		}
-
-		BoundHandler.prototype = objectCreate(DelegateHandler.prototype);
-
-		BoundHandler.prototype.when = function(resolve, notify, t, receiver, f, r, u) {
-			// Because handlers are allowed to be shared among promises,
-			// each of which possibly having a different receiver, we have
-			// to insert our own receiver into the chain if it has been set
-			// so that callbacks (f, r, u) will be called using our receiver
-			if(this.receiver !== void 0) {
-				receiver = this.receiver;
-			}
-			this.join().when(resolve, notify, t, receiver, f, r, u);
-		};
-
-		/**
-		 * Handler that wraps an untrusted thenable and assimilates it in a future stack
-		 * @private
-		 * @param {function} then
-		 * @param {{then: function}} thenable
-		 * @constructor
-		 */
-		function ThenableHandler(then, thenable) {
-			DeferredHandler.call(this);
-			this.assimilated = false;
-			this.untrustedThen = then;
-			this.thenable = thenable;
-		}
-
-		ThenableHandler.prototype = objectCreate(DeferredHandler.prototype);
-
-		ThenableHandler.prototype.when = function(resolve, notify, t, receiver, f, r, u) {
-			if(!this.assimilated) {
-				this.assimilated = true;
-				this._assimilate();
-			}
-			DeferredHandler.prototype.when.call(this, resolve, notify, t, receiver, f, r, u);
-		};
-
-		ThenableHandler.prototype._assimilate = function() {
-			var h = this;
-			this._try(this.untrustedThen, this.thenable, _resolve, _reject, _notify);
-
-			function _resolve(x) { h.resolve(x); }
-			function _reject(x)  { h.reject(x); }
-			function _notify(x)  { h.notify(x); }
-		};
-
-		ThenableHandler.prototype._try = function(then, thenable, resolve, reject, notify) {
-			try {
-				then.call(thenable, resolve, reject, notify);
-			} catch (e) {
-				reject(e);
-			}
-		};
-
-		/**
-		 * Handler for a fulfilled promise
-		 * @private
-		 * @param {*} x fulfillment value
-		 * @constructor
-		 */
-		function FulfilledHandler(x) {
-			this.value = x;
-		}
-
-		FulfilledHandler.prototype = objectCreate(Handler.prototype);
-
-		FulfilledHandler.prototype.inspect = function() {
-			return toFulfilledState(this.value);
-		};
-
-		FulfilledHandler.prototype.when = function(resolve, notify, t, receiver, f) {
-			var x = typeof f === 'function'
-				? tryCatchReject(f, this.value, receiver)
-				: this.value;
-
-			resolve.call(t, x);
-		};
-
-		FulfilledHandler.prototype._addTrace = noop;
-
-		/**
-		 * Handler for a rejected promise
-		 * @private
-		 * @param {*} x rejection reason
-		 * @constructor
-		 */
-		function RejectedHandler(x, observed) {
-			this.value = x;
-
-			if(this._isMonitored()) {
-				this.observed = !!observed;
-				this.key = this.observed ? -1 : this._env.promiseMonitor.startTrace(x);
-			}
-		}
-
-		RejectedHandler.prototype = objectCreate(Handler.prototype);
-
-		RejectedHandler.prototype.inspect = function() {
-			return toRejectedState(this.value);
-		};
-
-		RejectedHandler.prototype.when = function(resolve, notify, t, receiver, f, r) {
-			if(this._isMonitored() && !this.observed) {
-				this.observed = true;
-				this._env.promiseMonitor.removeTrace(this.key);
-			}
-
-			var x = typeof r === 'function'
-				? tryCatchReject(r, this.value, receiver)
-				: reject(this.value);
-
-			resolve.call(t, x);
-		};
-
-		RejectedHandler.prototype._addTrace = function(trace) {
-			if(!this.observed) {
-				this._env.promiseMonitor.updateTrace(this.key, trace);
-			}
-		};
-
-		// Errors and singletons
-
-		foreverPendingPromise = new InternalPromise(new Handler());
-		promiseCycleError = new RejectedHandler(new TypeError('Promise cycle'), true);
-
-		// Snapshot states
-
-		/**
-		 * Creates a fulfilled state snapshot
-		 * @private
-		 * @param {*} x any value
-		 * @returns {{state:'fulfilled',value:*}}
-		 */
-		function toFulfilledState(x) {
-			return { state: 'fulfilled', value: x };
-		}
-
-		/**
-		 * Creates a rejected state snapshot
-		 * @private
-		 * @param {*} x any reason
-		 * @returns {{state:'rejected',reason:*}}
-		 */
-		function toRejectedState(x) {
-			return { state: 'rejected', reason: x };
-		}
-
-		/**
-		 * Creates a pending state snapshot
-		 * @private
-		 * @returns {{state:'pending'}}
-		 */
-		function toPendingState() {
-			return { state: 'pending' };
-		}
-
-		// Task runners
-
-		/**
-		 * Run a single consumer
-		 * @private
-		 * @constructor
-		 */
-		function RunHandlerTask(a, b, c, d, e, f, g, handler) {
-			this.a=a;this.b=b;this.c=c;this.d=d;this.e=e;this.f=f;this.g=g;
-			this.handler = handler;
-		}
-
-		RunHandlerTask.prototype.run = function() {
-			this.handler.when(this.a, this.b, this.c, this.d, this.e, this.f, this.g);
-		};
-
-		/**
-		 * Run a queue of progress handlers
-		 * @private
-		 * @constructor
-		 */
-		function ProgressTask(q, value) {
-			this.q = q;
-			this.value = value;
-		}
-
-		ProgressTask.prototype.run = function() {
-			var q = this.q;
-			// First progress handler is at index 1
-			for (var i = 1; i < q.length; i+=7) {
-				this._notify(q[i], q[i+1], q[i+2], q[i+5]);
-			}
-		};
-
-		ProgressTask.prototype._notify = function(notify, t, receiver, u) {
-			var x = typeof u === 'function'
-				? tryCatchReturn(u, this.value, receiver)
-				: this.value;
-
-			notify.call(t, x);
-		};
-
-		/**
-		 * @param {*} x
-		 * @returns {boolean} false iff x is guaranteed not to be a thenable
-		 */
-		function maybeThenable(x) {
-			return (typeof x === 'object' || typeof x === 'function') && x !== null;
-		}
-
-		/**
-		 * Return f.call(thisArg, x), or if it throws return a rejected promise for
-		 * the thrown exception
-		 * @private
-		 */
-		function tryCatchReject(f, x, thisArg) {
-			try {
-				return f.call(thisArg, x);
-			} catch(e) {
-				return reject(e);
-			}
-		}
-
-		/**
-		 * Return f.call(thisArg, x), or if it throws, *return* the exception
-		 * @private
-		 */
-		function tryCatchReturn(f, x, thisArg) {
-			try {
-				return f.call(thisArg, x);
-			} catch(e) {
-				return e;
-			}
-		}
-
-		function noop() {}
-
-		return Promise;
-	};
-});
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
-
-},{}],18:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1983,7 +1287,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1991,73 +1295,25 @@ define(function() {
 (function(define) { 'use strict';
 define(function(require) {
 
-	var Queue = require('./Queue');
+	var timer = require('../timer');
+	var TimeoutError = require('../TimeoutError');
 
-	// Credit to Twisol (https://github.com/Twisol) for suggesting
-	// this type of extensible queue + trampoline approach for next-tick conflation.
-
-	function Scheduler(enqueue) {
-		this._enqueue = enqueue;
-		this._handlerQueue = new Queue(15);
-
-		var self = this;
-		this.drainQueue = function() {
-			self._drainQueue();
-		};
-	}
-
-	/**
-	 * Enqueue a task. If the queue is not currently scheduled to be
-	 * drained, schedule it.
-	 * @param {function} task
-	 */
-	Scheduler.prototype.enqueue = function(task) {
-		if(this._handlerQueue.push(task) === 1) {
-			this._enqueue(this.drainQueue);
-		}
-	};
-
-	/**
-	 * Drain the handler queue entirely, being careful to allow the
-	 * queue to be extended while it is being processed, and to continue
-	 * processing until it is truly empty.
-	 */
-	Scheduler.prototype._drainQueue = function() {
-		var q = this._handlerQueue;
-		while(q.length > 0) {
-			q.shift().run();
-		}
-	};
-
-	return Scheduler;
-
-});
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
-
-},{"./Queue":9}],20:[function(require,module,exports){
-/** @license MIT License (c) copyright 2010-2014 original author or authors */
-/** @author Brian Cavalier */
-/** @author John Hann */
-
-(function(define) { 'use strict';
-define(function() {
-
-	return function timed(setTimer, cancelTimer, Promise) {
+	return function timed(Promise) {
 		/**
-		 * Return a new promise that fulfills with the same
-		 * @param ms
-		 * @returns {Object.constructor}
+		 * Return a new promise whose fulfillment value is revealed only
+		 * after ms milliseconds
+		 * @param {number} ms milliseconds
+		 * @returns {Promise}
 		 */
 		Promise.prototype.delay = function(ms) {
-			var self = this;
+			var p = this._beget();
+			var h = p._handler;
 
-			return new this.constructor(function(resolve, reject, notify) {
-				self.then(function(x) {
-					setTimer(function() {
-						resolve(x);
-					}, ms);
-				}, reject, notify);
-			});
+			this._handler.chain(h, function delay(x) {
+					timer.set(function() { h.resolve(x); }, ms);
+				}, h.reject, h.notify);
+
+			return p;
 		};
 
 		/**
@@ -2065,66 +1321,125 @@ define(function() {
 		 * this promise fulfills earlier, in which case the returned promise
 		 * fulfills with the same value.
 		 * @param {number} ms milliseconds
+		 * @param {Error|*=} reason optional rejection reason to use, defaults
+		 *   to an Error if not provided
 		 * @returns {Promise}
 		 */
-		Promise.prototype.timeout = function(ms) {
-			var self = this;
-			return new this.constructor(function(resolve, reject, notify) {
+		Promise.prototype.timeout = function(ms, reason) {
+			var hasReason = arguments.length > 1;
+			var p = this._beget();
+			var h = p._handler;
 
-				var timer = setTimer(function onTimeout() {
-					reject(new Error('timed out after ' + ms + 'ms'));
-				}, ms);
+			var t = timer.set(onTimeout, ms);
 
-				self.then(
-					function onFulfill(x) {
-						cancelTimer(timer);
-						resolve(x);
-					},
-					function onReject(x) {
-						cancelTimer(timer);
-						reject(x);
-					},
-					notify
-				);
-			});
+			this._handler.chain(h,
+				function onFulfill(x) {
+					timer.clear(t);
+					this.resolve(x); // this = p._handler
+				},
+				function onReject(x) {
+					timer.clear(t);
+					this.reject(x); // this = p._handler
+				},
+				h.notify);
+
+			return p;
+
+			function onTimeout() {
+				h.reject(hasReason
+					? reason : new TimeoutError('timed out after ' + ms + 'ms'));
+			}
 		};
 
 		return Promise;
 	};
 
 });
-}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{}],21:[function(require,module,exports){
+},{"../TimeoutError":10,"../timer":24}],19:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
 
 (function(define) { 'use strict';
 define(function(require) {
-	/*global setTimeout,clearTimeout*/
-	var cjsRequire, vertx, setTimer, clearTimer;
 
-	cjsRequire = require;
+	var timer = require('../timer');
 
-	try {
-		vertx = cjsRequire('vertx');
-		setTimer = function (f, ms) { return vertx.setTimer(ms, f); };
-		clearTimer = vertx.cancelTimer;
-	} catch (e) {
-		setTimer = setTimeout;
-		clearTimer = clearTimeout;
+	var logError = (function() {
+		if(typeof console !== 'undefined') {
+			if(typeof console.error !== 'undefined') {
+				return function(e) {
+					console.error(e);
+				};
+			}
+
+			if(typeof console.log !== 'undefined') {
+				return function(e) {
+					console.log(e);
+				};
+			}
+		}
+
+		return noop;
+	}());
+
+	return function unhandledRejection(Promise, enqueue) {
+		var unhandledRejections = [];
+
+		if(typeof enqueue !== 'function') {
+			enqueue = function(f) {
+				timer.set(f, 0);
+			};
+		}
+
+		function reportUnhandledRejections() {
+			unhandledRejections.forEach(function (r) {
+				if(!r.handled) {
+					logError('Potentially unhandled rejection ' + formatError(r.value));
+				}
+			});
+			unhandledRejections = [];
+		}
+
+		Promise.onPotentiallyUnhandledRejection = function(rejection) {
+			if(unhandledRejections.length === 0) {
+				enqueue(reportUnhandledRejections);
+			}
+			unhandledRejections.push(rejection);
+		};
+
+		Promise.onFatalRejection = function(rejection) {
+			enqueue(function() {
+				throw rejection.value;
+			});
+		};
+
+		return Promise;
+	};
+
+	function formatError(e) {
+		var s;
+		if(typeof e === 'object' && e.stack) {
+			s = e.stack;
+		} else {
+			s = String(e);
+			if(s === '[object Object]' && typeof JSON !== 'undefined') {
+				s = JSON.stringify(e);
+			}
+		}
+
+		return e instanceof Error ? s : s + ' (WARNING: non-Error used)';
+
 	}
 
-	return {
-		set: setTimer,
-		clear: clearTimer
-	};
+	function noop() {}
 
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{}],22:[function(require,module,exports){
+},{"../timer":24}],20:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -2158,7 +1473,946 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 
+},{}],21:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function() {
+
+	return function liftAll(liftOne, combine, dst, src) {
+		if(typeof combine === 'undefined') {
+			combine = defaultCombine;
+		}
+
+		return Object.keys(src).reduce(function(dst, key) {
+			var f = src[key];
+			return typeof f === 'function' ? combine(dst, liftOne(f), key) : dst;
+		}, typeof dst === 'undefined' ? defaultDst(src) : dst);
+	};
+
+	function defaultCombine(o, f, k) {
+		o[k] = f;
+		return o;
+	}
+
+	function defaultDst(src) {
+		return typeof src === 'function' ? src.bind() : Object.create(src);
+	}
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+
+},{}],22:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function() {
+
+	return function makePromise(environment) {
+
+		var tasks = environment.scheduler;
+
+		var objectCreate = Object.create ||
+			function(proto) {
+				function Child() {}
+				Child.prototype = proto;
+				return new Child();
+			};
+
+		/**
+		 * Create a promise whose fate is determined by resolver
+		 * @constructor
+		 * @returns {Promise} promise
+		 * @name Promise
+		 */
+		function Promise(resolver) {
+			this._handler = arguments.length === 0
+				? foreverPendingHandler : init(resolver);
+		}
+
+		/**
+		 * Run the supplied resolver
+		 * @param resolver
+		 * @returns {makePromise.DeferredHandler}
+		 */
+		function init(resolver) {
+			var handler = new DeferredHandler();
+
+			try {
+				resolver(promiseResolve, promiseReject, promiseNotify);
+			} catch (e) {
+				promiseReject(e);
+			}
+
+			return handler;
+
+			/**
+			 * Transition from pre-resolution state to post-resolution state, notifying
+			 * all listeners of the ultimate fulfillment or rejection
+			 * @param {*} x resolution value
+			 */
+			function promiseResolve (x) {
+				handler.resolve(x);
+			}
+			/**
+			 * Reject this promise with reason, which will be used verbatim
+			 * @param {Error|*} reason rejection reason, strongly suggested
+			 *   to be an Error type
+			 */
+			function promiseReject (reason) {
+				handler.reject(reason);
+			}
+
+			/**
+			 * Issue a progress event, notifying all progress listeners
+			 * @param {*} x progress event payload to pass to all listeners
+			 */
+			function promiseNotify (x) {
+				handler.notify(x);
+			}
+		}
+
+		// Creation
+
+		Promise.resolve = resolve;
+		Promise.reject = reject;
+		Promise.never = never;
+
+		Promise._defer = defer;
+
+		/**
+		 * Returns a trusted promise. If x is already a trusted promise, it is
+		 * returned, otherwise returns a new trusted Promise which follows x.
+		 * @param  {*} x
+		 * @return {Promise} promise
+		 */
+		function resolve(x) {
+			return x instanceof Promise ? x
+				: promiseFromHandler(new AsyncHandler(getHandlerUnchecked(x)));
+		}
+
+		/**
+		 * Return a reject promise with x as its reason (x is used verbatim)
+		 * @param {*} x
+		 * @returns {Promise} rejected promise
+		 */
+		function reject(x) {
+			return promiseFromHandler(new AsyncHandler(new RejectedHandler(x)));
+		}
+
+		/**
+		 * Return a promise that remains pending forever
+		 * @returns {Promise} forever-pending promise.
+		 */
+		function never() {
+			return foreverPendingPromise; // Should be frozen
+		}
+
+		/**
+		 * Creates an internal {promise, resolver} pair
+		 * @private
+		 * @returns {Promise}
+		 */
+		function defer() {
+			return promiseFromHandler(new DeferredHandler());
+		}
+
+		/**
+		 * Create a new promise with the supplied handler
+		 * @private
+		 * @param {object} handler
+		 * @returns {Promise}
+		 */
+		function promiseFromHandler(handler) {
+			return configurePromise(handler, new Promise());
+		}
+
+		function configurePromise(handler, p) {
+			p._handler = handler;
+			return p;
+		}
+
+		// Transformation and flow control
+
+		/**
+		 * Transform this promise's fulfillment value, returning a new Promise
+		 * for the transformed result.  If the promise cannot be fulfilled, onRejected
+		 * is called with the reason.  onProgress *may* be called with updates toward
+		 * this promise's fulfillment.
+		 * @param {function=} onFulfilled fulfillment handler
+		 * @param {function=} onRejected rejection handler
+		 * @deprecated @param {function=} onProgress progress handler
+		 * @return {Promise} new promise
+		 */
+		Promise.prototype.then = function(onFulfilled, onRejected) {
+			var parent = this._handler;
+
+			if (typeof onFulfilled !== 'function' && parent.join().state > 0) {
+				// Short circuit: value will not change, simply share handler
+				return promiseFromHandler(parent);
+			}
+
+			var p = this._beget();
+			var child = p._handler;
+
+			parent.when({
+				resolve: child.resolve,
+				notify: child.notify,
+				context: child,
+				receiver: parent.receiver,
+				fulfilled: onFulfilled,
+				rejected: onRejected,
+				progress: arguments.length > 2 ? arguments[2] : void 0
+			});
+
+			return p;
+		};
+
+		/**
+		 * If this promise cannot be fulfilled due to an error, call onRejected to
+		 * handle the error. Shortcut for .then(undefined, onRejected)
+		 * @param {function?} onRejected
+		 * @return {Promise}
+		 */
+		Promise.prototype['catch'] = function(onRejected) {
+			return this.then(void 0, onRejected);
+		};
+
+		/**
+		 * Private function to bind a thisArg for this promise's handlers
+		 * @private
+		 * @param {object} thisArg `this` value for all handlers attached to
+		 *  the returned promise.
+		 * @returns {Promise}
+		 */
+		Promise.prototype._bindContext = function(thisArg) {
+			return promiseFromHandler(new BoundHandler(this._handler, thisArg));
+		};
+
+		/**
+		 * Creates a new, pending promise of the same type as this promise
+		 * @private
+		 * @returns {Promise}
+		 */
+		Promise.prototype._beget = function() {
+			var p = new this.constructor();
+			var parent = this._handler;
+			var child = new DeferredHandler(parent.receiver, parent.join().context);
+			return configurePromise(child, p);
+		};
+
+		/**
+		 * Check if x is a rejected promise, and if so, delegate to handler._fatal
+		 * @private
+		 * @param {*} x
+		 */
+		Promise.prototype._maybeFatal = function(x) {
+			if(!maybeThenable(x)) {
+				return;
+			}
+
+			var handler = getHandlerUnchecked(x);
+			handler.context = this._handler.context;
+			handler.chain(handler, void 0, function() {
+				this._fatal(this.context);
+			});
+		};
+
+		// Array combinators
+
+		Promise.all = all;
+		Promise.race = race;
+
+		/**
+		 * Return a promise that will fulfill when all promises in the
+		 * input array have fulfilled, or will reject when one of the
+		 * promises rejects.
+		 * @param {array} promises array of promises
+		 * @returns {Promise} promise for array of fulfillment values
+		 */
+		function all(promises) {
+			/*jshint maxcomplexity:8*/
+			var resolver = new DeferredHandler();
+			var len = promises.length >>> 0;
+			var pending = len;
+			var results = [];
+
+			var i, h, x;
+			for (i = 0; i < len; ++i) {
+				x = promises[i];
+
+				if (x === void 0 && !(i in promises)) {
+					--pending;
+					continue;
+				}
+
+				if (maybeThenable(x)) {
+					h = x instanceof Promise
+						? x._handler.join()
+						: getHandlerUntrusted(x);
+
+					if (h.state === 0) {
+						resolveOne(resolver, results, h, i);
+					} else if (h.state > 0) {
+						results[i] = h.value;
+						--pending;
+					} else {
+						h.chain(resolver, void 0, resolver.reject);
+						break;
+					}
+
+				} else {
+					results[i] = x;
+					--pending;
+				}
+			}
+
+			if(pending === 0) {
+				resolver.resolve(results);
+			}
+
+			return promiseFromHandler(resolver);
+
+			function resolveOne(resolver, results, handler, i) {
+				handler.chain(resolver, function(x) {
+					results[i] = x;
+					if(--pending === 0) {
+						this.resolve(results);
+					}
+				}, resolver.reject, resolver.notify);
+			}
+		}
+
+		/**
+		 * Fulfill-reject competitive race. Return a promise that will settle
+		 * to the same state as the earliest input promise to settle.
+		 *
+		 * WARNING: The ES6 Promise spec requires that race()ing an empty array
+		 * must return a promise that is pending forever.  This implementation
+		 * returns a singleton forever-pending promise, the same singleton that is
+		 * returned by Promise.never(), thus can be checked with ===
+		 *
+		 * @param {array} promises array of promises to race
+		 * @returns {Promise} if input is non-empty, a promise that will settle
+		 * to the same outcome as the earliest input promise to settle. if empty
+		 * is empty, returns a promise that will never settle.
+		 */
+		function race(promises) {
+			// Sigh, race([]) is untestable unless we return *something*
+			// that is recognizable without calling .then() on it.
+			if(Object(promises) === promises && promises.length === 0) {
+				return never();
+			}
+
+			var h = new DeferredHandler();
+			var i, x;
+			for(i=0; i<promises.length; ++i) {
+				x = promises[i];
+				if (x !== void 0 && i in promises) {
+					getHandler(x).chain(h, h.resolve, h.reject);
+				}
+			}
+			return promiseFromHandler(h);
+		}
+
+		// Promise internals
+
+		/**
+		 * Get an appropriate handler for x, checking for untrusted thenables
+		 * and promise graph cycles.
+		 * @private
+		 * @param {*} x
+		 * @param {object?} h optional handler to check for cycles
+		 * @returns {object} handler
+		 */
+		function getHandler(x, h) {
+			if(x instanceof Promise) {
+				var xh = x._handler.join();
+				return h === xh ? promiseCycleHandler() : xh;
+			}
+			return maybeThenable(x) ? getHandlerUntrusted(x) : new FulfilledHandler(x);
+		}
+
+		/**
+		 * Get an appropriate handler for x, without checking for cycles
+		 * @private
+		 * @param {*} x
+		 * @returns {object} handler
+		 */
+		function getHandlerUnchecked(x) {
+			if(x instanceof Promise) {
+				return x._handler.join();
+			}
+			return maybeThenable(x) ? getHandlerUntrusted(x) : new FulfilledHandler(x);
+		}
+
+		/**
+		 * Get a handler for potentially untrusted thenable x
+		 * @param {*} x
+		 * @returns {object} handler
+		 */
+		function getHandlerUntrusted(x) {
+			try {
+				var untrustedThen = x.then;
+				return typeof untrustedThen === 'function'
+					? new ThenableHandler(untrustedThen, x)
+					: new FulfilledHandler(x);
+			} catch(e) {
+				return new RejectedHandler(e);
+			}
+		}
+
+		/**
+		 * Recursively collapse handler chain to find the handler
+		 * nearest to the fully resolved value.
+		 * @param {Handler} h
+		 * @returns {*}
+		 */
+		function join(h) {
+			while(h.handler !== void 0) {
+				h = h.handler;
+			}
+			return h;
+		}
+
+		/**
+		 * Handler for a promise that is pending forever
+		 * @private
+		 * @constructor
+		 */
+		function Handler() {
+			this.state = 0;
+		}
+
+		Handler.prototype.when
+			= Handler.prototype.resolve
+			= Handler.prototype.reject
+			= Handler.prototype.notify
+			= Handler.prototype._fatal
+			= Handler.prototype._removeTrace
+			= Handler.prototype._reportTrace
+			= noop;
+
+		Handler.prototype.inspect = toPendingState;
+
+		Handler.prototype.join = function() { return join(this); };
+
+		Handler.prototype.chain = function(to, fulfilled, rejected, progress) {
+			this.when({
+				resolve: noop,
+				notify: noop,
+				context: void 0,
+				receiver: to,
+				fulfilled: fulfilled,
+				rejected: rejected,
+				progress: progress
+			});
+		};
+
+		Handler.prototype.fold = function(to, f, z) {
+			join(this).chain(to, function(x) {
+				getHandler(z).chain(this, function(z) {
+					this.resolve(tryCatchReject2(f, z, x, this.receiver));
+				}, this.reject, this.notify);
+			}, to.reject, to.notify);
+		};
+
+		/**
+		 * Handler that manages a queue of consumers waiting on a pending promise
+		 * @private
+		 * @constructor
+		 */
+		function DeferredHandler(receiver, inheritedContext) {
+			Promise.createContext(this, inheritedContext);
+
+			this.consumers = [];
+			this.receiver = receiver;
+			this.handler = void 0;
+			this.resolved = false;
+			this.state = 0;
+		}
+
+		inherit(Handler, DeferredHandler);
+
+		DeferredHandler.prototype.inspect = function() {
+			return this.resolved ? this.join().inspect() : toPendingState();
+		};
+
+		DeferredHandler.prototype.resolve = function(x) {
+			if(!this.resolved) {
+				this._resolve(getHandler(x, this));
+			}
+		};
+
+		DeferredHandler.prototype.reject = function(x) {
+			if(!this.resolved) {
+				this._resolve(new RejectedHandler(x));
+			}
+		};
+
+		DeferredHandler.prototype.join = function() {
+			if (this.resolved) {
+				return this.handler = join(this.handler);
+			} else {
+				return this;
+			}
+		};
+
+		DeferredHandler.prototype.run = function() {
+			var q = this.consumers;
+			var handler = this.handler.join();
+			this.consumers = void 0;
+
+			for (var i = 0; i < q.length; ++i) {
+				handler.when(q[i]);
+			}
+		};
+
+		DeferredHandler.prototype._resolve = function(handler) {
+			this.resolved = true;
+			this.handler = handler;
+			tasks.enqueue(this);
+
+			if(this.context !== void 0) {
+				handler._reportTrace(this.context);
+			}
+		};
+
+		DeferredHandler.prototype.when = function(continuation) {
+			if(this.resolved) {
+				tasks.enqueue(new ContinuationTask(continuation, this.handler));
+			} else {
+				this.consumers.push(continuation);
+			}
+		};
+
+		DeferredHandler.prototype.notify = function(x) {
+			if(!this.resolved) {
+				tasks.enqueue(new ProgressTask(this.consumers, x));
+			}
+		};
+
+		DeferredHandler.prototype._reportTrace = function(context) {
+			this.resolved && this.handler.join()._reportTrace(context);
+		};
+
+		DeferredHandler.prototype._removeTrace = function() {
+			this.resolved && this.handler.join()._removeTrace();
+		};
+
+		DeferredHandler.prototype._fatal = function(context) {
+			var c = typeof context === 'undefined' ? this.context : context;
+			this.resolved && this.handler.join()._fatal(c);
+		};
+
+		/**
+		 * Abstract base for handler that delegates to another handler
+		 * @private
+		 * @param {object} handler
+		 * @constructor
+		 */
+		function DelegateHandler(handler) {
+			this.handler = handler;
+			this.state = 0;
+		}
+
+		inherit(Handler, DelegateHandler);
+
+		DelegateHandler.prototype.inspect = function() {
+			return this.join().inspect();
+		};
+
+		DelegateHandler.prototype._reportTrace = function(context) {
+			this.join()._reportTrace(context);
+		};
+
+		DelegateHandler.prototype._removeTrace = function() {
+			this.join()._removeTrace();
+		};
+
+		/**
+		 * Wrap another handler and force it into a future stack
+		 * @private
+		 * @param {object} handler
+		 * @constructor
+		 */
+		function AsyncHandler(handler) {
+			DelegateHandler.call(this, handler);
+		}
+
+		inherit(DelegateHandler, AsyncHandler);
+
+		AsyncHandler.prototype.when = function(continuation) {
+			tasks.enqueue(new ContinuationTask(continuation, this.join()));
+		};
+
+		/**
+		 * Handler that follows another handler, injecting a receiver
+		 * @private
+		 * @param {object} handler another handler to follow
+		 * @param {object=undefined} receiver
+		 * @constructor
+		 */
+		function BoundHandler(handler, receiver) {
+			DelegateHandler.call(this, handler);
+			this.receiver = receiver;
+		}
+
+		inherit(DelegateHandler, BoundHandler);
+
+		BoundHandler.prototype.when = function(continuation) {
+			// Because handlers are allowed to be shared among promises,
+			// each of which possibly having a different receiver, we have
+			// to insert our own receiver into the chain if it has been set
+			// so that callbacks (f, r, u) will be called using our receiver
+			if(this.receiver !== void 0) {
+				continuation.receiver = this.receiver;
+			}
+			this.join().when(continuation);
+		};
+
+		/**
+		 * Handler that wraps an untrusted thenable and assimilates it in a future stack
+		 * @private
+		 * @param {function} then
+		 * @param {{then: function}} thenable
+		 * @constructor
+		 */
+		function ThenableHandler(then, thenable) {
+			DeferredHandler.call(this);
+			this.assimilated = false;
+			this.untrustedThen = then;
+			this.thenable = thenable;
+		}
+
+		inherit(DeferredHandler, ThenableHandler);
+
+		ThenableHandler.prototype.when = function(continuation) {
+			if(!this.assimilated) {
+				this.assimilated = true;
+				assimilate(this);
+			}
+			DeferredHandler.prototype.when.call(this, continuation);
+		};
+
+		function assimilate(h) {
+			tryAssimilate(h.untrustedThen, h.thenable, _resolve, _reject, _notify);
+
+			function _resolve(x) { h.resolve(x); }
+			function _reject(x)  { h.reject(x); }
+			function _notify(x)  { h.notify(x); }
+		}
+
+		function tryAssimilate(then, thenable, resolve, reject, notify) {
+			try {
+				then.call(thenable, resolve, reject, notify);
+			} catch (e) {
+				reject(e);
+			}
+		}
+
+		/**
+		 * Handler for a fulfilled promise
+		 * @private
+		 * @param {*} x fulfillment value
+		 * @constructor
+		 */
+		function FulfilledHandler(x) {
+			Promise.createContext(this);
+
+			this.value = x;
+			this.state = 1;
+		}
+
+		inherit(Handler, FulfilledHandler);
+
+		FulfilledHandler.prototype.inspect = function() {
+			return { state: 'fulfilled', value: this.value };
+		};
+
+		FulfilledHandler.prototype.when = function(cont) {
+			var x;
+
+			if (typeof cont.fulfilled === 'function') {
+				Promise.enterContext(this);
+				x = tryCatchReject(cont.fulfilled, this.value, cont.receiver);
+				Promise.exitContext();
+			} else {
+				x = this.value;
+			}
+
+			cont.resolve.call(cont.context, x);
+		};
+
+		/**
+		 * Handler for a rejected promise
+		 * @private
+		 * @param {*} x rejection reason
+		 * @constructor
+		 */
+		function RejectedHandler(x) {
+			Promise.createContext(this);
+
+			this.value = x;
+			this.state = -1;
+			this.handled = false;
+
+			this._reportTrace();
+		}
+
+		inherit(Handler, RejectedHandler);
+
+		RejectedHandler.prototype.inspect = function() {
+			return { state: 'rejected', reason: this.value };
+		};
+
+		RejectedHandler.prototype.when = function(cont) {
+			var x;
+
+			if (typeof cont.rejected === 'function') {
+				this._removeTrace();
+				Promise.enterContext(this);
+				x = tryCatchReject(cont.rejected, this.value, cont.receiver);
+				Promise.exitContext();
+			} else {
+				x = promiseFromHandler(this);
+			}
+
+
+			cont.resolve.call(cont.context, x);
+		};
+
+		RejectedHandler.prototype._reportTrace = function(context) {
+			Promise.onPotentiallyUnhandledRejection(this, context);
+		};
+
+		RejectedHandler.prototype._removeTrace = function() {
+			this.handled = true;
+			Promise.onPotentiallyUnhandledRejectionHandled(this);
+		};
+
+		RejectedHandler.prototype._fatal = function(context) {
+			Promise.onFatalRejection(this, context);
+		};
+
+		// Unhandled rejection hooks
+		// By default, everything is a noop
+
+		// TODO: Better names: "annotate"?
+		Promise.createContext
+			= Promise.enterContext
+			= Promise.exitContext
+			= Promise.onPotentiallyUnhandledRejection
+			= Promise.onPotentiallyUnhandledRejectionHandled
+			= Promise.onFatalRejection
+			= noop;
+
+		// Errors and singletons
+
+		var foreverPendingHandler = new Handler();
+		var foreverPendingPromise = promiseFromHandler(foreverPendingHandler);
+
+		function promiseCycleHandler() {
+			return new RejectedHandler(new TypeError('Promise cycle'));
+		}
+
+		// Snapshot states
+
+		/**
+		 * Creates a pending state snapshot
+		 * @private
+		 * @returns {{state:'pending'}}
+		 */
+		function toPendingState() {
+			return { state: 'pending' };
+		}
+
+		// Task runners
+
+		/**
+		 * Run a single consumer
+		 * @private
+		 * @constructor
+		 */
+		function ContinuationTask(continuation, handler) {
+			this.continuation = continuation;
+			this.handler = handler;
+		}
+
+		ContinuationTask.prototype.run = function() {
+			this.handler.join().when(this.continuation);
+		};
+
+		/**
+		 * Run a queue of progress handlers
+		 * @private
+		 * @constructor
+		 */
+		function ProgressTask(q, value) {
+			this.q = q;
+			this.value = value;
+		}
+
+		ProgressTask.prototype.run = function() {
+			var q = this.q;
+			// First progress handler is at index 1
+			for (var i = 0; i < q.length; ++i) {
+				this._notify(q[i]);
+			}
+		};
+
+		ProgressTask.prototype._notify = function(continuation) {
+			var x = typeof continuation.progress === 'function'
+				? tryCatchReturn(continuation.progress, this.value, continuation.receiver)
+				: this.value;
+
+			continuation.notify.call(continuation.context, x);
+		};
+
+		// Other helpers
+
+		/**
+		 * @param {*} x
+		 * @returns {boolean} false iff x is guaranteed not to be a thenable
+		 */
+		function maybeThenable(x) {
+			return (typeof x === 'object' || typeof x === 'function') && x !== null;
+		}
+
+		/**
+		 * Return f.call(thisArg, x), or if it throws return a rejected promise for
+		 * the thrown exception
+		 * @private
+		 */
+		function tryCatchReject(f, x, thisArg) {
+			try {
+				return f.call(thisArg, x);
+			} catch(e) {
+				return reject(e);
+			}
+		}
+
+		/**
+		 * Same as above, but includes the extra argument parameter.
+		 * @private
+		 */
+		function tryCatchReject2(f, x, y, thisArg) {
+			try {
+				return f.call(thisArg, x, y);
+			} catch(e) {
+				return reject(e);
+			}
+		}
+
+		/**
+		 * Return f.call(thisArg, x), or if it throws, *return* the exception
+		 * @private
+		 */
+		function tryCatchReturn(f, x, thisArg) {
+			try {
+				return f.call(thisArg, x);
+			} catch(e) {
+				return e;
+			}
+		}
+
+		function inherit(Parent, Child) {
+			Child.prototype = objectCreate(Parent.prototype);
+			Child.prototype.constructor = Child;
+		}
+
+		function noop() {}
+
+		return Promise;
+	};
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+
 },{}],23:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function(require) {
+
+	var Queue = require('./Queue');
+
+	// Credit to Twisol (https://github.com/Twisol) for suggesting
+	// this type of extensible queue + trampoline approach for next-tick conflation.
+
+	function Scheduler(enqueue) {
+		this._enqueue = enqueue;
+		this._handlerQueue = new Queue(15);
+
+		var self = this;
+		this.drainQueue = function() {
+			self._drainQueue();
+		};
+	}
+
+	/**
+	 * Enqueue a task. If the queue is not currently scheduled to be
+	 * drained, schedule it.
+	 * @param {function} task
+	 */
+	Scheduler.prototype.enqueue = function(task) {
+		if(this._handlerQueue.length === 0) {
+			this._enqueue(this.drainQueue);
+		}
+		this._handlerQueue.push(task);
+	};
+
+	/**
+	 * Drain the handler queue entirely, being careful to allow the
+	 * queue to be extended while it is being processed, and to continue
+	 * processing until it is truly empty.
+	 */
+	Scheduler.prototype._drainQueue = function() {
+		var q = this._handlerQueue;
+		while(q.length > 0) {
+			q.shift().run();
+		}
+	};
+
+	return Scheduler;
+
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+
+},{"./Queue":9}],24:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function(require) {
+	/*global setTimeout,clearTimeout*/
+	var cjsRequire, vertx, setTimer, clearTimer;
+
+	cjsRequire = require;
+
+	try {
+		vertx = cjsRequire('vertx');
+		setTimer = function (f, ms) { return vertx.setTimer(ms, f); };
+		clearTimer = vertx.cancelTimer;
+	} catch (e) {
+		setTimer = function(f, ms) { return setTimeout(f, ms); };
+		clearTimer = function(t) { return clearTimeout(t); };
+	}
+
+	return {
+		set: setTimer,
+		clear: clearTimer
+	};
+
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
+
+},{}],25:[function(require,module,exports){
 /** @license MIT License (c) copyright 2013 original author or authors */
 
 /**
@@ -2172,13 +2426,11 @@ define(function() {
 (function(define) {
 define(function(require) {
 
-	var when, Promise, slice, setTimer, _liftAll;
-
-	when = require('./when');
-	Promise = when.Promise;
-	_liftAll = require('./lib/liftAll');
-	setTimer = require('./lib/timer').set;
-	slice = Array.prototype.slice;
+	var when = require('./when');
+	var Promise = when.Promise;
+	var _liftAll = require('./lib/liftAll');
+	var setTimer = require('./lib/timer').set;
+	var slice = Array.prototype.slice;
 
 	return {
 		lift: lift,
@@ -2216,33 +2468,48 @@ define(function(require) {
 	 *    // Logs 'Calculation failed'
 	 *    nodefn.apply(onlySmallNumbers, [15]).then(console.log, console.error);
 	 *
-	 * @param {function} func node-style function that will be called
+	 * @param {function} f node-style function that will be called
 	 * @param {Array} [args] array of arguments to func
 	 * @returns {Promise} promise for the value func passes to its callback
 	 */
-	function apply(func, args) {
-		return _apply(func, this, args || []);
+	function apply(f, args) {
+		return run(f, this, args || []);
 	}
 
 	/**
 	 * Apply helper that allows specifying thisArg
 	 * @private
 	 */
-	function _apply(func, thisArg, args) {
-		return Promise.all(args).then(function(args) {
-			return _applyDirect(func, thisArg, args);
+	function run(f, thisArg, args) {
+		var p = Promise._defer();
+		switch(args.length) {
+			case 2:  apply2(p, f, thisArg, args); break;
+			case 1:  apply1(p, f, thisArg, args); break;
+			default: applyN(p, f, thisArg, args);
+		}
+
+		return p;
+	}
+
+	function applyN(p, f, thisArg, args) {
+		Promise.all(args)._handler.chain(thisArg, function(args) {
+			args.push(createCallback(p._handler));
+			f.apply(this, args);
 		});
 	}
 
-	/**
-	 * Apply helper that optimizes for small number of arguments
-	 * @private
-	 */
-	function _applyDirect(func, thisArg, args) {
-		var p = Promise._defer();
-		args.push(createCallback(p._handler));
-		func.apply(thisArg, args);
-		return p;
+	function apply2(p, f, thisArg, args) {
+		Promise.resolve(args[0]).then(function(x) {
+			Promise.resolve(args[1])._handler.chain(thisArg, function(y) {
+				f.call(this, x, y, createCallback(p._handler));
+			});
+		});
+	}
+
+	function apply1(p, f, thisArg, args) {
+		Promise.resolve(args[0])._handler.chain(thisArg, function(x) {
+			f.call(this, x, createCallback(p._handler));
+		});
 	}
 
 	/**
@@ -2266,12 +2533,12 @@ define(function(require) {
 	 *    // Logs 'Calculation failed'
 	 *    nodefn.call(sumSmallNumbers, 5, 10).then(console.log, console.error);
 	 *
-	 * @param {function} func node-style function that will be called
+	 * @param {function} f node-style function that will be called
 	 * @param {...*} [args] arguments that will be forwarded to the function
 	 * @returns {Promise} promise for the value func passes to its callback
 	 */
-	function call(func /*, args... */) {
-		return _apply(func, this, slice.call(arguments, 1));
+	function call(f /*, args... */) {
+		return run(f, this, slice.call(arguments, 1));
 	}
 
 	/**
@@ -2300,14 +2567,14 @@ define(function(require) {
 	 *    promiseRead('doesnt_exist.txt').then(console.log, console.error);
 	 *
 	 *
-	 * @param {Function} func node-style function to be bound
-	 * @param {...*} [args] arguments to be prepended for the new function
+	 * @param {Function} f node-style function to be lifted
+	 * @param {...*} [args] arguments to be prepended for the new function @deprecated
 	 * @returns {Function} a promise-returning function
 	 */
-	function lift(func /*, args... */) {
-		var args = slice.call(arguments, 1);
+	function lift(f /*, args... */) {
+		var args = arguments.length > 1 ? slice.call(arguments, 1) : [];
 		return function() {
-			return _apply(func, this, args.concat(slice.call(arguments)));
+			return run(f, this, args.concat(slice.call(arguments)));
 		};
 	}
 
@@ -2437,7 +2704,7 @@ define(function(require) {
 
 
 
-},{"./lib/liftAll":16,"./lib/timer":21,"./when":29}],24:[function(require,module,exports){
+},{"./lib/liftAll":21,"./lib/timer":24,"./when":31}],26:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -2478,7 +2745,7 @@ define(function(require) {
 
 
 
-},{"./when":29}],25:[function(require,module,exports){
+},{"./when":31}],27:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -2530,7 +2797,7 @@ define(function(require) {
 
 
 
-},{"./when":29}],26:[function(require,module,exports){
+},{"./when":31}],28:[function(require,module,exports){
 /** @license MIT License (c) copyright 2012-2013 original author or authors */
 
 /**
@@ -2544,11 +2811,9 @@ define(function(require) {
 (function (define) { 'use strict';
 define(function(require) {
 
-	var when, attempt, cancelable;
-
-	when = require('./when');
-	attempt = when['try'];
-	cancelable = require('./cancelable');
+	var when = require('./when');
+	var attempt = when['try'];
+	var cancelable = require('./cancelable');
 
 	/**
 	 * Periodically execute the work function on the msec delay. The result of
@@ -2648,7 +2913,7 @@ define(function(require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./cancelable":3,"./when":29}],27:[function(require,module,exports){
+},{"./cancelable":3,"./when":31}],29:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -2696,7 +2961,7 @@ define(function(require) {
 
 
 
-},{"./when":29}],28:[function(require,module,exports){
+},{"./when":31}],30:[function(require,module,exports){
 /** @license MIT License (c) copyright 2011-2013 original author or authors */
 
 /**
@@ -2712,48 +2977,49 @@ define(function(require) {
 (function(define) {
 define(function(require) {
 
-	var resolve = require('./when').resolve;
+	var when = require('./when');
 
     /**
 	 * @deprecated Use when(trigger).timeout(ms)
      */
     return function timeout(msec, trigger) {
-		return resolve(trigger).timeout(msec);
+		return when(trigger).timeout(msec);
     };
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
 
 
-},{"./when":29}],29:[function(require,module,exports){
+},{"./when":31}],31:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 
 /**
- * A lightweight CommonJS Promises/A and when() implementation
+ * Promises/A+ and when() implementation
  * when is part of the cujoJS family of libraries (http://cujojs.com/)
  * @author Brian Cavalier
  * @author John Hann
- * @version 3.0.0
+ * @version 3.2.0
  */
 (function(define) { 'use strict';
 define(function (require) {
 
-	var timer = require('./lib/timer');
-	var timed = require('./lib/timed');
-	var array = require('./lib/array');
-	var flow = require('./lib/flow');
-	var inspect = require('./lib/inspect');
-	var generate = require('./lib/iterate');
-	var progress = require('./lib/progress');
-	var withThis = require('./lib/with');
+	var timed = require('./lib/decorators/timed');
+	var array = require('./lib/decorators/array');
+	var flow = require('./lib/decorators/flow');
+	var fold = require('./lib/decorators/fold');
+	var inspect = require('./lib/decorators/inspect');
+	var generate = require('./lib/decorators/iterate');
+	var progress = require('./lib/decorators/progress');
+	var withThis = require('./lib/decorators/with');
+	var unhandledRejection = require('./lib/decorators/unhandledRejection');
+	var TimeoutError = require('./lib/TimeoutError');
 
-	var Promise = require('./lib/Promise');
-	Promise = [array, flow, generate, progress, inspect, withThis]
-		.reduceRight(function(Promise, feature) {
+	var Promise = [array, flow, fold, generate, progress,
+		inspect, withThis, timed, unhandledRejection]
+		.reduce(function(Promise, feature) {
 			return feature(Promise);
-		}, timed(timer.set, timer.clear, Promise));
+		}, require('./lib/Promise'));
 
-	var resolve = Promise.resolve;
 	var slice = Array.prototype.slice;
 
 	// Public API
@@ -2763,8 +3029,8 @@ define(function (require) {
 	when.reject      = Promise.reject;       // Create a rejected promise
 
 	when.lift        = lift;                 // lift a function to return promises
-	when['try']      = tryCall;              // call a function and return a promise
-	when.attempt     = tryCall;              // alias for when.try
+	when['try']      = attempt;              // call a function and return a promise
+	when.attempt     = attempt;              // alias for when.try
 
 	when.iterate     = Promise.iterate;      // Generate a stream of promises
 	when.unfold      = Promise.unfold;       // Generate a stream of promises
@@ -2786,8 +3052,12 @@ define(function (require) {
 	when.Promise     = Promise;              // Promise constructor
 	when.defer       = defer;                // Create a {promise, resolve, reject} tuple
 
+	// Error types
+
+	when.TimeoutError = TimeoutError;
+
 	/**
-	 * When x, which may be a promise, thenable, or non-promise value,
+	 * Get a trusted promise for x, or by transforming x with onFulfilled
 	 *
 	 * @param {*} x
 	 * @param {function?} onFulfilled callback to be called when x is
@@ -2795,15 +3065,21 @@ define(function (require) {
 	 *   will be invoked immediately.
 	 * @param {function?} onRejected callback to be called when x is
 	 *   rejected.
-	 * @param {function?} onProgress callback to be called when progress updates
+	 * @deprecated @param {function?} onProgress callback to be called when progress updates
 	 *   are issued for x.
 	 * @returns {Promise} a new promise that will fulfill with the return
 	 *   value of callback or errback or the completion value of promiseOrValue if
 	 *   callback and/or errback is not supplied.
 	 */
-	function when(x, onFulfilled, onRejected, onProgress) {
-		var p = resolve(x);
-		return arguments.length < 2 ? p : p.then(onFulfilled, onRejected, onProgress);
+	function when(x, onFulfilled, onRejected) {
+		var p = Promise.resolve(x);
+		if(arguments.length < 2) {
+			return p;
+		}
+
+		return arguments.length > 3
+			? p.then(onFulfilled, onRejected, arguments[3])
+			: p.then(onFulfilled, onRejected);
 	}
 
 	/**
@@ -2833,7 +3109,7 @@ define(function (require) {
 	 * @param {function} f
 	 * @returns {Promise}
 	 */
-	function tryCall(f /*, args... */) {
+	function attempt(f /*, args... */) {
 		/*jshint validthis:true */
 		return _apply(f, this, slice.call(arguments, 1));
 	}
@@ -2842,9 +3118,9 @@ define(function (require) {
 	 * try/lift helper that allows specifying thisArg
 	 * @private
 	 */
-	function _apply(func, thisArg, args) {
+	function _apply(f, thisArg, args) {
 		return Promise.all(args).then(function(args) {
-			return func.apply(thisArg, args);
+			return f.apply(thisArg, args);
 		});
 	}
 
@@ -2973,7 +3249,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./lib/Promise":8,"./lib/array":10,"./lib/flow":13,"./lib/inspect":14,"./lib/iterate":15,"./lib/progress":18,"./lib/timed":20,"./lib/timer":21,"./lib/with":22}]},{},[1])
+},{"./lib/Promise":8,"./lib/TimeoutError":10,"./lib/decorators/array":12,"./lib/decorators/flow":13,"./lib/decorators/fold":14,"./lib/decorators/inspect":15,"./lib/decorators/iterate":16,"./lib/decorators/progress":17,"./lib/decorators/timed":18,"./lib/decorators/unhandledRejection":19,"./lib/decorators/with":20}]},{},[1])
 (1)
 });
 ;
