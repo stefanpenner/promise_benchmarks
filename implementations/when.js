@@ -1,4 +1,4 @@
-!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define("when", [], e):"undefined"!=typeof window?window.when=e():"undefined"!=typeof global?global.when=e():"undefined"!=typeof self&&(self.when=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.when=e():"undefined"!=typeof global?global.when=e():"undefined"!=typeof self&&(self.when=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var when = module.exports = require('../when');
 
 when.callbacks = require('../callbacks');
@@ -1014,7 +1014,6 @@ define(function() {
 
 		var reject = Promise.reject;
 		var origCatch = Promise.prototype['catch'];
-		var nil = Promise.nil;
 
 		/**
 		 * Handle the ultimate fulfillment value or rejection reason, and assume
@@ -1028,7 +1027,7 @@ define(function() {
 		Promise.prototype.done = function(onResult, onError) {
 			var h = this._handler;
 			h.when({ resolve: this._maybeFatal, notify: noop, context: this,
-				receiver: h.receiver, arg: nil, fulfilled: onResult, rejected: onError,
+				receiver: h.receiver, fulfilled: onResult, rejected: onError,
 				progress: void 0 });
 		};
 
@@ -1309,9 +1308,9 @@ define(function(require) {
 			var p = this._beget();
 			var h = p._handler;
 
-			this._handler.chain(h, function delay(x) {
-					timer.set(function() { h.resolve(x); }, ms);
-				}, h.reject, h.notify);
+			this._handler.map(function delay(x) {
+				timer.set(function() { h.resolve(x); }, ms);
+			}, h);
 
 			return p;
 		};
@@ -1365,53 +1364,31 @@ define(function(require) {
 (function(define) { 'use strict';
 define(function(require) {
 
-	var timer = require('../timer');
+	var async = require('../async');
 
-	var logError = (function() {
-		if(typeof console !== 'undefined') {
-			if(typeof console.error !== 'undefined') {
-				return function(e) {
-					console.error(e);
-				};
-			}
+	return function unhandledRejection(Promise) {
+		var logError = (function() {
+			if(typeof console !== 'undefined') {
+				if(typeof console.error !== 'undefined') {
+					return function(e) {
+						console.error(e);
+					};
+				}
 
-			if(typeof console.log !== 'undefined') {
 				return function(e) {
 					console.log(e);
 				};
 			}
-		}
 
-		return noop;
-	}());
-
-	return function unhandledRejection(Promise, enqueue) {
-		var unhandledRejections = [];
-
-		if(typeof enqueue !== 'function') {
-			enqueue = function(f) {
-				timer.set(f, 0);
-			};
-		}
-
-		function reportUnhandledRejections() {
-			unhandledRejections.forEach(function (r) {
-				if(!r.handled) {
-					logError('Potentially unhandled rejection ' + formatError(r.value));
-				}
-			});
-			unhandledRejections = [];
-		}
+			return noop;
+		}());
 
 		Promise.onPotentiallyUnhandledRejection = function(rejection) {
-			if(unhandledRejections.length === 0) {
-				enqueue(reportUnhandledRejections);
-			}
-			unhandledRejections.push(rejection);
+			logError('Potentially unhandled rejection ' + formatError(rejection.value));
 		};
 
 		Promise.onFatalRejection = function(rejection) {
-			enqueue(function() {
+			async(function() {
 				throw rejection.value;
 			});
 		};
@@ -1426,12 +1403,20 @@ define(function(require) {
 		} else {
 			s = String(e);
 			if(s === '[object Object]' && typeof JSON !== 'undefined') {
-				s = JSON.stringify(e);
+				s = tryStringify(e, s);
 			}
 		}
 
 		return e instanceof Error ? s : s + ' (WARNING: non-Error used)';
+	}
 
+	function tryStringify(e, defaultValue) {
+		try {
+			return JSON.stringify(e);
+		} catch(e) {
+			// Ignore. Cannot JSON.stringify e, stick with String(e)
+			return defaultValue;
+		}
 	}
 
 	function noop() {}
@@ -1439,7 +1424,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../timer":24}],20:[function(require,module,exports){
+},{"../async":11}],20:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1528,9 +1513,10 @@ define(function() {
 		 * @returns {Promise} promise
 		 * @name Promise
 		 */
-		function Promise(resolver) {
-			this._handler = arguments.length === 0
-				? foreverPendingHandler : init(resolver);
+		function Promise(resolver, handler) {
+			this._handler = resolver === Handler ? handler : init(resolver);
+//			this._handler = arguments.length === 0
+//				? foreverPendingHandler : init(resolver);
 		}
 
 		/**
@@ -1591,7 +1577,7 @@ define(function() {
 		 */
 		function resolve(x) {
 			return x instanceof Promise ? x
-				: promiseFromHandler(new AsyncHandler(getHandlerUnchecked(x)));
+				: new Promise(Handler, new AsyncHandler(getHandler(x)));
 		}
 
 		/**
@@ -1600,7 +1586,7 @@ define(function() {
 		 * @returns {Promise} rejected promise
 		 */
 		function reject(x) {
-			return promiseFromHandler(new AsyncHandler(new RejectedHandler(x)));
+			return new Promise(Handler, new AsyncHandler(new RejectedHandler(x)));
 		}
 
 		/**
@@ -1617,22 +1603,7 @@ define(function() {
 		 * @returns {Promise}
 		 */
 		function defer() {
-			return promiseFromHandler(new DeferredHandler());
-		}
-
-		/**
-		 * Create a new promise with the supplied handler
-		 * @private
-		 * @param {object} handler
-		 * @returns {Promise}
-		 */
-		function promiseFromHandler(handler) {
-			return configurePromise(handler, new Promise());
-		}
-
-		function configurePromise(handler, p) {
-			p._handler = handler;
-			return p;
+			return new Promise(Handler, new DeferredHandler());
 		}
 
 		// Transformation and flow control
@@ -1652,7 +1623,7 @@ define(function() {
 
 			if (typeof onFulfilled !== 'function' && parent.join().state > 0) {
 				// Short circuit: value will not change, simply share handler
-				return promiseFromHandler(parent);
+				return new Promise(Handler, parent);
 			}
 
 			var p = this._beget();
@@ -1689,7 +1660,7 @@ define(function() {
 		 * @returns {Promise}
 		 */
 		Promise.prototype._bindContext = function(thisArg) {
-			return promiseFromHandler(new BoundHandler(this._handler, thisArg));
+			return new Promise(Handler, new BoundHandler(this._handler, thisArg));
 		};
 
 		/**
@@ -1698,10 +1669,9 @@ define(function() {
 		 * @returns {Promise}
 		 */
 		Promise.prototype._beget = function() {
-			var p = new this.constructor();
 			var parent = this._handler;
 			var child = new DeferredHandler(parent.receiver, parent.join().context);
-			return configurePromise(child, p);
+			return new this.constructor(Handler, child);
 		};
 
 		/**
@@ -1714,11 +1684,11 @@ define(function() {
 				return;
 			}
 
-			var handler = getHandlerUnchecked(x);
-			handler.context = this._handler.context;
-			handler.chain(handler, void 0, function() {
-				this._fatal(this.context);
-			});
+			var handler = getHandler(x);
+			var context = this._handler.context;
+			handler.catchError(function() {
+				this._fatal(context);
+			}, handler);
 		};
 
 		// Array combinators
@@ -1736,12 +1706,11 @@ define(function() {
 		function all(promises) {
 			/*jshint maxcomplexity:8*/
 			var resolver = new DeferredHandler();
-			var len = promises.length >>> 0;
-			var pending = len;
-			var results = [];
+			var pending = promises.length >>> 0;
+			var results = new Array(pending);
 
 			var i, h, x;
-			for (i = 0; i < len; ++i) {
+			for (i = 0; i < promises.length; ++i) {
 				x = promises[i];
 
 				if (x === void 0 && !(i in promises)) {
@@ -1760,7 +1729,7 @@ define(function() {
 						results[i] = h.value;
 						--pending;
 					} else {
-						h.chain(resolver, void 0, resolver.reject);
+						h.catchError(resolver.reject, resolver);
 						break;
 					}
 
@@ -1774,15 +1743,14 @@ define(function() {
 				resolver.resolve(results);
 			}
 
-			return promiseFromHandler(resolver);
-
+			return new Promise(Handler, resolver);
 			function resolveOne(resolver, results, handler, i) {
-				handler.chain(resolver, function(x) {
+				handler.map(function(x) {
 					results[i] = x;
 					if(--pending === 0) {
 						this.resolve(results);
 					}
-				}, resolver.reject, resolver.notify);
+				}, resolver);
 			}
 		}
 
@@ -1815,26 +1783,10 @@ define(function() {
 					getHandler(x).chain(h, h.resolve, h.reject);
 				}
 			}
-			return promiseFromHandler(h);
+			return new Promise(Handler, h);
 		}
 
 		// Promise internals
-
-		/**
-		 * Get an appropriate handler for x, checking for untrusted thenables
-		 * and promise graph cycles.
-		 * @private
-		 * @param {*} x
-		 * @param {object?} h optional handler to check for cycles
-		 * @returns {object} handler
-		 */
-		function getHandler(x, h) {
-			if(x instanceof Promise) {
-				var xh = x._handler.join();
-				return h === xh ? promiseCycleHandler() : xh;
-			}
-			return maybeThenable(x) ? getHandlerUntrusted(x) : new FulfilledHandler(x);
-		}
 
 		/**
 		 * Get an appropriate handler for x, without checking for cycles
@@ -1842,7 +1794,7 @@ define(function() {
 		 * @param {*} x
 		 * @returns {object} handler
 		 */
-		function getHandlerUnchecked(x) {
+		function getHandler(x) {
 			if(x instanceof Promise) {
 				return x._handler.join();
 			}
@@ -1866,19 +1818,6 @@ define(function() {
 		}
 
 		/**
-		 * Recursively collapse handler chain to find the handler
-		 * nearest to the fully resolved value.
-		 * @param {Handler} h
-		 * @returns {*}
-		 */
-		function join(h) {
-			while(h.handler !== void 0) {
-				h = h.handler;
-			}
-			return h;
-		}
-
-		/**
 		 * Handler for a promise that is pending forever
 		 * @private
 		 * @constructor
@@ -1892,13 +1831,24 @@ define(function() {
 			= Handler.prototype.reject
 			= Handler.prototype.notify
 			= Handler.prototype._fatal
-			= Handler.prototype._removeTrace
-			= Handler.prototype._reportTrace
+			= Handler.prototype._unreport
+			= Handler.prototype._report
 			= noop;
 
 		Handler.prototype.inspect = toPendingState;
 
-		Handler.prototype.join = function() { return join(this); };
+		/**
+		 * Recursively collapse handler chain to find the handler
+		 * nearest to the fully resolved value.
+		 * @returns {object} handler nearest the fully resolved value
+		 */
+		Handler.prototype.join = function() {
+			var h = this;
+			while(h.handler !== void 0) {
+				h = h.handler;
+			}
+			return h;
+		};
 
 		Handler.prototype.chain = function(to, fulfilled, rejected, progress) {
 			this.when({
@@ -1912,12 +1862,20 @@ define(function() {
 			});
 		};
 
+		Handler.prototype.map = function(f, to) {
+			this.chain(to, f, to.reject, to.notify);
+		};
+
+		Handler.prototype.catchError = function(f, to) {
+			this.chain(to, to.resolve, f, to.notify);
+		};
+
 		Handler.prototype.fold = function(to, f, z) {
-			join(this).chain(to, function(x) {
-				getHandler(z).chain(this, function(z) {
+			this.join().map(function(x) {
+				getHandler(z).map(function(z) {
 					this.resolve(tryCatchReject2(f, z, x, this.receiver));
-				}, this.reject, this.notify);
-			}, to.reject, to.notify);
+				}, this);
+			}, to);
 		};
 
 		/**
@@ -1928,7 +1886,7 @@ define(function() {
 		function DeferredHandler(receiver, inheritedContext) {
 			Promise.createContext(this, inheritedContext);
 
-			this.consumers = [];
+			this.consumers = void 0;
 			this.receiver = receiver;
 			this.handler = void 0;
 			this.resolved = false;
@@ -1943,19 +1901,26 @@ define(function() {
 
 		DeferredHandler.prototype.resolve = function(x) {
 			if(!this.resolved) {
-				this._resolve(getHandler(x, this));
+				this.become(getHandler(x));
 			}
 		};
 
 		DeferredHandler.prototype.reject = function(x) {
 			if(!this.resolved) {
-				this._resolve(new RejectedHandler(x));
+				this.become(new RejectedHandler(x));
 			}
 		};
 
 		DeferredHandler.prototype.join = function() {
 			if (this.resolved) {
-				return this.handler = join(this.handler);
+				var h = this;
+				while(h.handler !== void 0) {
+					h = h.handler;
+					if(h === this) {
+						return this.handler = new Cycle();
+					}
+				}
+				return h;
 			} else {
 				return this;
 			}
@@ -1963,7 +1928,7 @@ define(function() {
 
 		DeferredHandler.prototype.run = function() {
 			var q = this.consumers;
-			var handler = this.handler.join();
+			var handler = this.join();
 			this.consumers = void 0;
 
 			for (var i = 0; i < q.length; ++i) {
@@ -1971,13 +1936,15 @@ define(function() {
 			}
 		};
 
-		DeferredHandler.prototype._resolve = function(handler) {
+		DeferredHandler.prototype.become = function(handler) {
 			this.resolved = true;
 			this.handler = handler;
-			tasks.enqueue(this);
+			if(this.consumers !== void 0) {
+				tasks.enqueue(this);
+			}
 
 			if(this.context !== void 0) {
-				handler._reportTrace(this.context);
+				handler._report(this.context);
 			}
 		};
 
@@ -1985,22 +1952,26 @@ define(function() {
 			if(this.resolved) {
 				tasks.enqueue(new ContinuationTask(continuation, this.handler));
 			} else {
-				this.consumers.push(continuation);
+				if(this.consumers === void 0) {
+					this.consumers = [continuation];
+				} else {
+					this.consumers.push(continuation);
+				}
 			}
 		};
 
 		DeferredHandler.prototype.notify = function(x) {
 			if(!this.resolved) {
-				tasks.enqueue(new ProgressTask(this.consumers, x));
+				tasks.enqueue(new ProgressTask(this, x));
 			}
 		};
 
-		DeferredHandler.prototype._reportTrace = function(context) {
-			this.resolved && this.handler.join()._reportTrace(context);
+		DeferredHandler.prototype._report = function(context) {
+			this.resolved && this.handler.join()._report(context);
 		};
 
-		DeferredHandler.prototype._removeTrace = function() {
-			this.resolved && this.handler.join()._removeTrace();
+		DeferredHandler.prototype._unreport = function() {
+			this.resolved && this.handler.join()._unreport();
 		};
 
 		DeferredHandler.prototype._fatal = function(context) {
@@ -2025,12 +1996,12 @@ define(function() {
 			return this.join().inspect();
 		};
 
-		DelegateHandler.prototype._reportTrace = function(context) {
-			this.join()._reportTrace(context);
+		DelegateHandler.prototype._report = function(context) {
+			this.join()._report(context);
 		};
 
-		DelegateHandler.prototype._removeTrace = function() {
-			this.join()._removeTrace();
+		DelegateHandler.prototype._unreport = function() {
+			this.join()._unreport();
 		};
 
 		/**
@@ -2157,10 +2128,10 @@ define(function() {
 			Promise.createContext(this);
 
 			this.value = x;
-			this.state = -1;
+			this.state = -1; // -1: rejected, -2: rejected and reported
 			this.handled = false;
 
-			this._reportTrace();
+			this._report();
 		}
 
 		inherit(Handler, RejectedHandler);
@@ -2173,30 +2144,43 @@ define(function() {
 			var x;
 
 			if (typeof cont.rejected === 'function') {
-				this._removeTrace();
+				this._unreport();
 				Promise.enterContext(this);
 				x = tryCatchReject(cont.rejected, this.value, cont.receiver);
 				Promise.exitContext();
 			} else {
-				x = promiseFromHandler(this);
+				x = new Promise(Handler, this);
 			}
 
 
 			cont.resolve.call(cont.context, x);
 		};
 
-		RejectedHandler.prototype._reportTrace = function(context) {
-			Promise.onPotentiallyUnhandledRejection(this, context);
+		RejectedHandler.prototype._report = function(context) {
+			tasks.afterQueue(reportUnhandled, this, context);
 		};
 
-		RejectedHandler.prototype._removeTrace = function() {
+		RejectedHandler.prototype._unreport = function() {
 			this.handled = true;
-			Promise.onPotentiallyUnhandledRejectionHandled(this);
+			tasks.afterQueue(reportHandled, this);
 		};
 
 		RejectedHandler.prototype._fatal = function(context) {
 			Promise.onFatalRejection(this, context);
 		};
+
+		function reportUnhandled(rejection, context) {
+			if(!rejection.handled) {
+				rejection.state = -2;
+				Promise.onPotentiallyUnhandledRejection(rejection, context);
+			}
+		}
+
+		function reportHandled(rejection) {
+			if(rejection.state === -2) {
+				Promise.onPotentiallyUnhandledRejectionHandled(rejection);
+			}
+		}
 
 		// Unhandled rejection hooks
 		// By default, everything is a noop
@@ -2213,11 +2197,13 @@ define(function() {
 		// Errors and singletons
 
 		var foreverPendingHandler = new Handler();
-		var foreverPendingPromise = promiseFromHandler(foreverPendingHandler);
+		var foreverPendingPromise = new Promise(Handler, foreverPendingHandler);
 
-		function promiseCycleHandler() {
-			return new RejectedHandler(new TypeError('Promise cycle'));
+		function Cycle() {
+			RejectedHandler.call(this, new TypeError('Promise cycle'));
 		}
+
+		inherit(RejectedHandler, Cycle);
 
 		// Snapshot states
 
@@ -2251,13 +2237,16 @@ define(function() {
 		 * @private
 		 * @constructor
 		 */
-		function ProgressTask(q, value) {
-			this.q = q;
+		function ProgressTask(handler, value) {
+			this.handler = handler;
 			this.value = value;
 		}
 
 		ProgressTask.prototype.run = function() {
-			var q = this.q;
+			var q = this.handler.consumers;
+			if(q === void 0) {
+				return;
+			}
 			// First progress handler is at index 1
 			for (var i = 0; i < q.length; ++i) {
 				this._notify(q[i]);
@@ -2347,10 +2336,12 @@ define(function(require) {
 	function Scheduler(enqueue) {
 		this._enqueue = enqueue;
 		this._handlerQueue = new Queue(15);
+		this._afterQueue = new Queue(5);
+		this._running = false;
 
 		var self = this;
-		this.drainQueue = function() {
-			self._drainQueue();
+		this.drain = function() {
+			self._drain();
 		};
 	}
 
@@ -2360,10 +2351,21 @@ define(function(require) {
 	 * @param {function} task
 	 */
 	Scheduler.prototype.enqueue = function(task) {
-		if(this._handlerQueue.length === 0) {
-			this._enqueue(this.drainQueue);
-		}
 		this._handlerQueue.push(task);
+		if(!this._running) {
+			this._running = true;
+			this._enqueue(this.drain);
+		}
+	};
+
+	Scheduler.prototype.afterQueue = function(f, x, y) {
+		this._afterQueue.push(f);
+		this._afterQueue.push(x);
+		this._afterQueue.push(y);
+		if(!this._running) {
+			this._running = true;
+			this._enqueue(this.drain);
+		}
 	};
 
 	/**
@@ -2371,11 +2373,18 @@ define(function(require) {
 	 * queue to be extended while it is being processed, and to continue
 	 * processing until it is truly empty.
 	 */
-	Scheduler.prototype._drainQueue = function() {
+	Scheduler.prototype._drain = function() {
 		var q = this._handlerQueue;
 		while(q.length > 0) {
 			q.shift().run();
 		}
+
+		q = this._afterQueue;
+		while(q.length > 0) {
+			q.shift()(q.shift(), q.shift());
+		}
+
+		this._running = false;
 	};
 
 	return Scheduler;
@@ -2998,7 +3007,7 @@ define(function(require) {
  * when is part of the cujoJS family of libraries (http://cujojs.com/)
  * @author Brian Cavalier
  * @author John Hann
- * @version 3.2.0
+ * @version 3.2.2
  */
 (function(define) { 'use strict';
 define(function (require) {

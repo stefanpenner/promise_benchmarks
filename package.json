@@ -20,7 +20,7 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-clean": "~0.5.0",
-    "when": "~3.2.0",
+    "when": "~3.2.2",
     "rsvp": "~3.0.0",
     "bluebird": "~0.11.5-1",
     "es6-module-transpiler": "~0.3.6",
