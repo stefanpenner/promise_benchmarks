@@ -13,6 +13,8 @@ var subscribe = require('./-internal').subscribe;
 var initializePromise = require('./-internal').initializePromise;
 var invokeCallback = require('./-internal').invokeCallback;
 var FULFILLED = require('./-internal').FULFILLED;
+var REJECTED = require('./-internal').REJECTED;
+var PENDING = require('./-internal').PENDING;
 var cast = require('./promise/cast')['default'];
 var all = require('./promise/all')['default'];
 var race = require('./promise/race')['default'];
@@ -166,17 +168,26 @@ Promise.prototype = {
     },
     then: function (onFulfillment, onRejection, label) {
         var parent = this;
-        parent._onerror = null;
-        var child = new this.constructor(noop, label);
         var state = parent._state;
-        var result = parent._result;
-        if (config.instrument) {
-            instrument('chained', parent, child);
+        var instrument = config.instrument;
+
+        if (state === FULFILLED && !onFulfillment || state === REJECTED && !onRejection) {
+          if (instrument) { instrument('chained', this, this); }
+          return this;
         }
-        if (state === FULFILLED && onFulfillment) {
-            config.async(function () {
-                invokeCallback(state, child, onFulfillment, result);
-            });
+
+        parent._onerror = null;
+
+        var result = parent._result;
+        var child = new this.constructor(noop, label);
+
+        if (instrument) { instrument('chained', parent, child); }
+
+        if (state) {
+          var handler = arguments[state - 1];
+          config.async(function () {
+            invokeCallback(state, child, handler, result);
+          });
         } else {
             subscribe(parent, child, onFulfillment, onRejection);
         }

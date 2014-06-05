@@ -1391,6 +1391,8 @@ define('rsvp/promise', [
     var initializePromise = __dependency5__.initializePromise;
     var invokeCallback = __dependency5__.invokeCallback;
     var FULFILLED = __dependency5__.FULFILLED;
+    var REJECTED = __dependency5__.REJECTED;
+    var PENDING = __dependency5__.PENDING;
     var cast = __dependency6__['default'];
     var all = __dependency7__['default'];
     var race = __dependency8__['default'];
@@ -1544,9 +1546,15 @@ define('rsvp/promise', [
         },
         then: function (onFulfillment, onRejection, label) {
             var parent = this;
+            var state = parent._state;
+            if (state === FULFILLED && !onFulfillment || state === REJECTED && !onRejection) {
+                if (config.instrument) {
+                    instrument('chained', this, this);
+                }
+                return this;
+            }
             parent._onerror = null;
             var child = new this.constructor(noop, label);
-            var state = parent._state;
             var result = parent._result;
             if (config.instrument) {
                 instrument('chained', parent, child);
