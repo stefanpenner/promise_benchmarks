@@ -26,4 +26,7 @@ The regex will match on the name of the test provided.
 node index.js --test=filter
 node index.js --test="all object"
 node index.js --test="all object",filter //combined
+node index.js --imp="rsvp"
+node index.js --imp="rsvp-3.0.8","when" // more specific
+node index.js -i=1,2,3 // choose the iteration counts
 ```
