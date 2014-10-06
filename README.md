@@ -8,7 +8,7 @@ Getting Started
 ===============
 
 ```sh
-npm install
+npm i
 PORT=9999 grunt server
 // navigate to http://127.0.0.1:9999 (PORT is configurable, defaults: 8000)
 ```
@@ -23,5 +23,7 @@ The regex will match on the name of the test provided.
 
 ```sh
 // Match all tests that either start with 'micro-' or have a number in their name
-node index.js t=micro-*,\d
+node index.js --test=filter
+node index.js --test="all object"
+node index.js --test="all object",filter //combined
 ```

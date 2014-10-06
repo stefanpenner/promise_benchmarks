@@ -5,7 +5,7 @@ Look for tests|t = comma separated value of regexes
 For example you can type in t=creat,reject OR tests='\d'
 */
 var customTestPatterns = args.filter(function(elem) {
-	return /^(tests|t)=/i.test(elem);
+	return /(tests|t)=/i.test(elem);
 })[0];
 
 if (customTestPatterns) {
@@ -14,6 +14,5 @@ if (customTestPatterns) {
     .substring(customTestPatterns.indexOf('=') + 1)
 		.split(',');
 }
-
 require('./es6');
 require('./lib/main').run(customTestPatterns);
