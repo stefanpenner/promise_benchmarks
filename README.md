@@ -4,22 +4,16 @@ promise_benchmarks
 some micro benchmarks with plans for more indepth benchmarks as time permits.
 
 
-Getting Started
-===============
+Usage
+=====
 
 ```sh
 npm i
-PORT=9999 grunt server
-// navigate to http://127.0.0.1:9999 (PORT is configurable, defaults: 8000)
+
 ```
 
-```sh
-// to run in node
-npm start
-```
-#### Specify Custom Tests
-To specify custom tests to run in node, specify a list of regexes prefixed with t= or tests= as in the example below. 
-The regex will match on the name of the test provided.
+commandline 
+--------------
 
 ```sh
 // Match all tests that either start with 'micro-' or have a number in their name
@@ -30,4 +24,12 @@ node index.js --impl="rsvp"
 node index.js --impl="rsvp-3.0.8","when" // more specific
 node index.js -i=1,2,3 // choose the iteration counts
 node index.js --impl=when,q,rsvp --test=filter,"all object" -i=1,2,3 // all together
+```
+
+webserver
+---------
+
+```sh
+PORT=9999 grunt server
+// navigate to http://127.0.0.1:9999 (PORT is configurable, defaults: 8000)
 ```
