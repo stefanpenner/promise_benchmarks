@@ -33,3 +33,15 @@ webserver
 PORT=9999 grunt server
 // navigate to http://127.0.0.1:9999 (PORT is configurable, defaults: 8000)
 ```
+
+
+new implementations
+-------------------
+
+its still ghetto but,
+implementations reside: https://github.com/stefanpenner/promise_benchmarks/tree/master/implementations
+
+typically AMD works fine, although lack of r.js means i quickly just deanonymize manually like: [this](https://github.com/stefanpenner/promise_benchmarks/blob/master/implementations/q.js#L48)
+
+node side importing happens: [here](https://github.com/stefanpenner/promise_benchmarks/blob/master/lib/config/implementations.js)
+client side importing happens: [here](https://github.com/stefanpenner/promise_benchmarks/blob/master/index.html#L1)
