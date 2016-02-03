@@ -31,14 +31,12 @@ if (customIterations) {
 		.split(',');
 }
 
-
 if (customImplementations) {
 	// Extract out the comma separated patterns
 	customImplementations= customImplementations.trim()
     .substring(customImplementations.indexOf('=') + 1)
 		.split(',');
 }
-
 
 require('./es6');
 require('./lib/main').run(customTestPatterns,
