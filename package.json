@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "devDependencies": {
-    "bluebird": "2.0.2",
+    "bluebird": "3.2.1",
     "es6-module-transpiler": "~0.3.6",
     "glob": "~3.2.7",
     "grunt": "~0.4.1",
@@ -26,7 +26,7 @@
     "mkdirp": "~0.3.5",
     "q": "~1.0.1",
     "rsvp": "~3.0.6",
-    "when": "^3.5.0"
+    "when": "^3.7.1"
   },
   "scripts": {
     "start": "npm build && node index",
